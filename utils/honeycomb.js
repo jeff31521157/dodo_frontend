@@ -51,10 +51,8 @@ export const getStakedBalance = async ({ web3, pid, userAddress }) => {
 export const getEarnedHoney = async ({ web3, pid, userAddress }) => {
   const contract = getContract(web3)
   try {
-    const { rewardDebt } = await contract.methods
-      .userInfo(pid, userAddress)
-      .call()
-    return new BigNumber(rewardDebt)
+    const { earned } = await contract.methods.userInfo(pid, userAddress).call()
+    return new BigNumber(earned)
   } catch (e) {
     console.log(e)
     return new BigNumber(0)
