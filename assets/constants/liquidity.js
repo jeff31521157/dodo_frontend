@@ -1,9 +1,9 @@
 export const supportedLiquidityTokens = {
   'COS-ETH': {
-    name: 'COS-ETH UNI-V2 LP',
+    name: 'COS-ETH UNI-V2 LP (TEST)',
     icon: 'cos.png',
     color: '#2196f3',
-    tokenAddress: '0xE6f8f44cAD76a29B6f26c817706526281F6b3356',
+    tokenAddress: '0xBd5190439AeBE7bDac3e28455AB9699b58Be8150',
     pid: 0,
   },
 }
