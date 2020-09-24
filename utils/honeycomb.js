@@ -43,6 +43,7 @@ export const getStakedBalance = async ({ web3, pid, userAddress }) => {
     const { amount } = await contract.methods.userInfo(pid, userAddress).call()
     return new BigNumber(amount)
   } catch (e) {
+    console.log(e)
     return new BigNumber(0)
   }
 }
@@ -55,6 +56,7 @@ export const getEarnedHoney = async ({ web3, pid, userAddress }) => {
       .call()
     return new BigNumber(rewardDebt)
   } catch (e) {
+    console.log(e)
     return new BigNumber(0)
   }
 }
@@ -65,6 +67,7 @@ export const getPendingHoney = async ({ web3, pid, userAddress }) => {
     const amount = await contract.methods.pendingHoney(pid, userAddress).call()
     return new BigNumber(amount)
   } catch (e) {
+    console.log(e)
     return new BigNumber(0)
   }
 }

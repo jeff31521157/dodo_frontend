@@ -31,6 +31,7 @@ export const approve = async ({
       .approve(contractAddress, uint256Max)
       .send({ from: userAddress })
   } catch (e) {
+    console.log(e)
     return null
   }
 }

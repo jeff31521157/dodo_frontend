@@ -6,6 +6,8 @@
       dark
       icon="mdi-alert-circle"
       border="left"
+      class="ma-10"
+      outlined
     >
       Invalid URL
     </v-alert>
@@ -16,12 +18,14 @@
       dark
       icon="mdi-wallet"
       border="left"
+      class="ma-10"
+      outlined
     >
       Please connect your wallet to begin
     </v-alert>
 
     <div v-else-if="account">
-      <h1>Liquidity Token Bank: {{ $route.params.id }}</h1>
+      <h1>Liquidity Token Bank: {{ liquidityTokenInfo.name }}</h1>
       <v-row>
         <v-col cols="12" sm="6">
           <v-card>
@@ -45,7 +49,9 @@
             <v-divider />
             <v-card-actions>
               <v-spacer />
-              <v-btn text color="primary" large>Collect</v-btn>
+              <v-btn text color="primary" large @click="collectHoney">
+                Collect
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -226,10 +232,7 @@ export default {
       this.syncAllowance()
     },
     approved(newVal) {
-      this.syncEarnedHoney()
-      this.syncPendingHoney()
-      this.syncTokenBalance()
-      this.syncStakedAmount()
+      this.syncAll()
     },
   },
   async created() {
@@ -238,7 +241,6 @@ export default {
       this.isInvalidParam = true
       return
     }
-
     await this.syncAllowance()
   },
   methods: {
@@ -306,9 +308,14 @@ export default {
         userAddress: this.account,
         pid: this.liquidityTokenInfo.pid,
       }
-      console.log(params)
       const amount = await getPendingHoney(params)
       this.pendingHoney = amount
+    },
+    syncAll() {
+      this.syncEarnedHoney()
+      this.syncPendingHoney()
+      this.syncStakedAmount()
+      this.syncTokenBalance()
     },
     async getApproval() {
       if (!this.account || !this.liquidityTokenInfo) {
@@ -332,7 +339,6 @@ export default {
       this.dialogMaxValue = this.tokenBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
-        console.log('deposit: ' + this.dialogValue)
         const params = {
           web3: this.$web3,
           pid: this.liquidityTokenInfo.pid,
@@ -341,9 +347,7 @@ export default {
         }
         const tx = await deposit(params)
         console.log(tx)
-        this.syncTokenBalance()
-        this.syncStakedAmount()
-        this.syncEarnedHoney()
+        this.syncAll()
         this.dialogProcessing = false
         this.dialog = false
       }
@@ -356,7 +360,6 @@ export default {
       this.dialogMaxValue = this.stakedBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
-        console.log('withdraw: ' + this.dialogValue)
         const params = {
           web3: this.$web3,
           pid: this.liquidityTokenInfo.pid,
@@ -365,9 +368,7 @@ export default {
         }
         const tx = await withdraw(params)
         console.log(tx)
-        this.syncTokenBalance()
-        this.syncStakedAmount()
-        this.syncEarnedHoney()
+        this.syncAll()
         this.dialogProcessing = false
         this.dialog = false
       }
@@ -378,20 +379,18 @@ export default {
       this.dialogValue = new BigNumber(multiplier)
         .multipliedBy(this.dialogMaxValue)
         .dividedBy(new BigNumber(10).pow(18))
-        .toFixed(2)
+        .toFixed()
     },
     async collectHoney() {
       const params = {
         web3: this.$web3,
-        userAddress: this.$store.state.account.address,
-        tokenAddress: '0xE6f8f44cAD76a29B6f26c817706526281F6b3356',
-        contractAddress: '0x97d37d2ceA1647C70aD23311b49B77ACfdBdFd21',
+        pid: this.liquidityTokenInfo.pid,
+        amount: 0,
+        userAddress: this.account,
       }
-      console.log(params)
-      const allowance = await getAllowance(params)
-      console.log(allowance)
-      const balance = await getBalance(params)
-      console.log(balance.toString())
+      const tx = await withdraw(params)
+      console.log(tx)
+      this.syncAll()
     },
   },
 }
