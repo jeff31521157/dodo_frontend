@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar fixed app class="primary" dark>
       <v-avatar size="32" tile class="ma-2">
-        <v-img :src="require('@/assets/images/honey-logo.png')" />
+        <v-img src="/honey-logo.png" />
       </v-avatar>
       <v-toolbar-title>Honey Finance</v-toolbar-title>
       <v-spacer />

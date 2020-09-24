@@ -31,7 +31,7 @@
           <v-card>
             <v-toolbar color="secondary" dense flat>
               <v-avatar size="32" tile class="mr-4">
-                <v-img :src="require('@/assets/images/honey-logo.png')" />
+                <v-img src="/honey-logo.png" />
               </v-avatar>
               <v-toolbar-title class="primary--text">My HONEY</v-toolbar-title>
             </v-toolbar>
