@@ -1,9 +1,8 @@
 import erc20Abi from '@/assets/abis/erc20.json'
 import BigNumber from 'bignumber.js'
 
-const uint256Max = new BigNumber(
+const uint256Max =
   '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-)
 
 export const getTokenContract = ({ web3, tokenAddress }) => {
   return new web3.eth.Contract(erc20Abi, tokenAddress)
