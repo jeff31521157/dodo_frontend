@@ -176,21 +176,18 @@
 </template>
 <script>
 import BigNumber from 'bignumber.js'
-import { supportedLiquidityTokens } from '@/assets/constants/liquidity'
-import { contractAddress } from '@/assets/constants/honeycomb'
+import SupportedLiquidityTokens from '@/lib/constants/SupportedLiquidityTokens'
 import { mapState } from 'vuex'
-import { getAllowance, getBalance, approve } from '@/utils/erc20'
-import {
-  deposit,
-  withdraw,
-  getStakedBalance,
-  getEarnedHoney,
-  getPendingHoney,
-} from '@/utils/honeycomb'
 import { formatBalance } from '@/utils/balance'
+import ERC20ContractWrapper from '@/lib/ERC20ContractWrapper'
+import HoneycombContractWrapper from '@/lib/HoneycombContractWrapper'
+import Addresses from '@/lib/constants/Addresses'
+import Logger from '@/lib/Logger'
 
 export default {
   data: () => ({
+    lpTokenWrapper: null,
+    honeycombWrapper: null,
     isInvalidParam: false,
     liquidityTokenInfo: null,
     approved: false,
@@ -236,12 +233,23 @@ export default {
     },
   },
   async created() {
-    this.liquidityTokenInfo = supportedLiquidityTokens[this.urlParam]
+    this.liquidityTokenInfo = SupportedLiquidityTokens[this.urlParam]
     if (this.liquidityTokenInfo === undefined) {
       this.isInvalidParam = true
       return
     }
+    this.lpTokenWrapper = new ERC20ContractWrapper(
+      this.$web3,
+      this.liquidityTokenInfo.tokenAddress
+    )
+    this.honeycombWrapper = new HoneycombContractWrapper(this.$web3)
     await this.syncAllowance()
+  },
+  mounted() {
+    this.$web3.addBlockProducedListener(this.syncAll)
+  },
+  unmounted() {
+    this.$web3.removeBlockProducedListener(this.syncAll)
   },
   methods: {
     async syncAllowance() {
@@ -250,13 +258,9 @@ export default {
         return
       }
 
-      const params = {
-        web3: this.$web3,
-        userAddress: this.account,
-        tokenAddress: this.liquidityTokenInfo.tokenAddress,
-        contractAddress,
-      }
-      const allowance = await getAllowance(params)
+      const allowance = await this.lpTokenWrapper.getAllowance(
+        Addresses.honeycomb
+      )
       this.approved = allowance > 0
     },
     async syncTokenBalance() {
@@ -264,12 +268,7 @@ export default {
         return
       }
 
-      const params = {
-        web3: this.$web3,
-        userAddress: this.account,
-        tokenAddress: this.liquidityTokenInfo.tokenAddress,
-      }
-      const amount = await getBalance(params)
+      const amount = await this.lpTokenWrapper.getBalance()
       this.tokenBalance = amount
     },
     async syncStakedAmount() {
@@ -277,12 +276,9 @@ export default {
         return
       }
 
-      const params = {
-        web3: this.$web3,
-        userAddress: this.account,
-        pid: this.liquidityTokenInfo.pid,
-      }
-      const amount = await getStakedBalance(params)
+      const amount = await this.honeycombWrapper.getStakedAmount(
+        this.liquidityTokenInfo.pid
+      )
       this.stakedBalance = amount
     },
     async syncEarnedHoney() {
@@ -290,12 +286,9 @@ export default {
         return
       }
 
-      const params = {
-        web3: this.$web3,
-        userAddress: this.account,
-        pid: this.liquidityTokenInfo.pid,
-      }
-      const amount = await getEarnedHoney(params)
+      const amount = await this.honeycombWrapper.getEarnedHoney(
+        this.liquidityTokenInfo.pid
+      )
       this.earnedHoney = amount
     },
     async syncPendingHoney() {
@@ -303,19 +296,17 @@ export default {
         return
       }
 
-      const params = {
-        web3: this.$web3,
-        userAddress: this.account,
-        pid: this.liquidityTokenInfo.pid,
-      }
-      const amount = await getPendingHoney(params)
+      const amount = await this.honeycombWrapper.getPendingHoney(
+        this.liquidityTokenInfo.pid
+      )
       this.pendingHoney = amount
     },
-    syncAll() {
-      this.syncEarnedHoney()
-      this.syncPendingHoney()
-      this.syncStakedAmount()
-      this.syncTokenBalance()
+    async syncAll() {
+      Logger.log('sync')
+      await this.syncEarnedHoney()
+      await this.syncPendingHoney()
+      await this.syncStakedAmount()
+      await this.syncTokenBalance()
     },
     async getApproval() {
       if (!this.account || !this.liquidityTokenInfo) {
@@ -323,14 +314,8 @@ export default {
         return
       }
 
-      const params = {
-        web3: this.$web3,
-        userAddress: this.account,
-        tokenAddress: this.liquidityTokenInfo.tokenAddress,
-        contractAddress,
-      }
-      const tx = await approve(params)
-      console.log(tx)
+      const tx = await this.lpTokenWrapper.approve(Addresses.honeycomb)
+      Logger.log(tx)
       this.syncAllowance()
     },
     showDepositDialog() {
@@ -339,14 +324,11 @@ export default {
       this.dialogMaxValue = this.tokenBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
-        const params = {
-          web3: this.$web3,
-          pid: this.liquidityTokenInfo.pid,
-          amount: this.dialogValue,
-          userAddress: this.account,
-        }
-        const tx = await deposit(params)
-        console.log(tx)
+        const tx = await this.honeycombWrapper.deposit(
+          this.liquidityTokenInfo.pid,
+          this.dialogValue
+        )
+        Logger.log(tx)
         this.syncAll()
         this.dialogProcessing = false
         this.dialog = false
@@ -360,14 +342,11 @@ export default {
       this.dialogMaxValue = this.stakedBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
-        const params = {
-          web3: this.$web3,
-          pid: this.liquidityTokenInfo.pid,
-          amount: this.dialogValue,
-          userAddress: this.account,
-        }
-        const tx = await withdraw(params)
-        console.log(tx)
+        const tx = await this.honeycombWrapper.withdraw(
+          this.liquidityTokenInfo.pid,
+          this.dialogValue
+        )
+        Logger.log(tx)
         this.syncAll()
         this.dialogProcessing = false
         this.dialog = false
@@ -382,14 +361,11 @@ export default {
         .toFixed()
     },
     async collectHoney() {
-      const params = {
-        web3: this.$web3,
-        pid: this.liquidityTokenInfo.pid,
-        amount: 0,
-        userAddress: this.account,
-      }
-      const tx = await withdraw(params)
-      console.log(tx)
+      const tx = await this.honeycombWrapper.withdraw(
+        this.liquidityTokenInfo.pid,
+        0
+      )
+      Logger.log(tx)
       this.syncAll()
     },
   },

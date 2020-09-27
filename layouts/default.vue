@@ -6,20 +6,22 @@
       </v-avatar>
       <v-toolbar-title>Honey Finance</v-toolbar-title>
       <v-spacer />
-      <v-chip v-if="account" outlined color="secondary">
-        <v-icon left>mdi-wallet</v-icon>
-        {{ formattedAddress }}
-      </v-chip>
-      <v-btn
-        v-else
-        class="ma-2"
-        outlined
-        rounded
-        color="secondary"
-        @click="connectWallet"
-      >
-        <v-icon left>mdi-wallet</v-icon> Connect Wallet
-      </v-btn>
+      <div v-if="isWeb3Supported">
+        <v-chip v-if="connected" outlined color="secondary">
+          <v-icon left>mdi-wallet</v-icon>
+          {{ formattedAddress }}
+        </v-chip>
+        <v-btn
+          v-else
+          class="ma-2"
+          outlined
+          rounded
+          color="secondary"
+          @click="connectWallet"
+        >
+          <v-icon left>mdi-wallet</v-icon> Connect Wallet
+        </v-btn>
+      </div>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -40,20 +42,42 @@ export default {
     return {}
   },
   computed: {
-    ...mapState('account', { account: (state) => state.address }),
-    formattedAddress() {
-      return formatAddress(this.account)
+    ...mapState('account', ['address']),
+    connected() {
+      return this.address != null
     },
+    formattedAddress() {
+      return formatAddress(this.address)
+    },
+    isWeb3Supported() {
+      return this.$web3.isSupported
+    },
+  },
+  mounted() {
+    if (!this.isWeb3Supported) {
+      return
+    }
+
+    this.$web3.addAccountChangedListener(this.handleAccountChanged)
+  },
+  unmounted() {
+    if (!this.isWeb3Supported) {
+      return
+    }
+
+    this.$web3.removeAccountChangedListener(this.handleAccountChanged)
   },
   methods: {
     async connectWallet() {
-      const accounts = await this.$web3.eth.requestAccounts()
-      if (!accounts || accounts.length === 0) {
+      await this.$web3.connect()
+    },
+    handleAccountChanged(account) {
+      if (!account) {
         this.$store.commit('account/unset')
         return
       }
 
-      this.$store.commit('account/set', accounts[0])
+      this.$store.commit('account/set', account)
     },
   },
 }
