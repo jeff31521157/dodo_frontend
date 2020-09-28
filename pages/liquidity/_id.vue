@@ -113,7 +113,13 @@
             <v-divider />
             <v-card-actions>
               <v-spacer />
-              <v-btn text color="primary" large @click="collectHoney">
+              <v-btn
+                text
+                color="primary"
+                large
+                :disabled="!approved"
+                @click="collectHoney"
+              >
                 Collect
               </v-btn>
             </v-card-actions>
@@ -122,7 +128,7 @@
         <v-col cols="12" sm="6">
           <v-card>
             <v-toolbar :color="liquidityTokenInfo.color" dense flat dark>
-              <v-avatar size="32" tile class="mr-4">
+              <v-avatar size="32" class="mr-4">
                 <v-img :src="`/token-icons/${liquidityTokenInfo.icon}`" />
               </v-avatar>
               <v-toolbar-title>
@@ -172,14 +178,20 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-col cols="12">
+        <v-col v-if="!approved" cols="12">
+          <v-alert icon="mdi-flash" color="secondary lighten-4" class="mt-6">
+            Please approve the Honeycomb contract to access your
+            {{ liquidityTokenInfo.name }} tokens
+          </v-alert>
+        </v-col>
+        <v-col v-else cols="12">
           <v-alert
             icon="mdi-lightbulb"
             color="secondary lighten-4"
-            class="my-6"
+            class="mt-6"
           >
             Every time you deposit and withdraw
-            {{ liquidityTokenInfo.name }} tokens, the contract will
+            {{ liquidityTokenInfo.name }} tokens, the Honeycomb contract will
             automatically collect HONEY rewards for you!
           </v-alert>
         </v-col>
@@ -236,7 +248,13 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="dialog = false">Close</v-btn>
+            <v-btn
+              color="primary"
+              text
+              :disabled="dialogProcessing"
+              @click="dialog = false"
+              >Close</v-btn
+            >
             <v-btn
               color="primary"
               :loading="dialogProcessing"
@@ -247,6 +265,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-snackbar v-model="waiting" timeout="-1">
+        <v-progress-circular indeterminate size="20" class="mr-2" />
+        Waiting for the transaction to be confirmed...
+      </v-snackbar>
     </div>
   </v-container>
 </template>
@@ -282,6 +304,7 @@ export default {
     startBlock: null,
     endBlock: null,
     honeyPerBlock: null,
+    waiting: false,
   }),
   computed: {
     ...mapState('account', { account: (state) => state.address }),
@@ -318,11 +341,11 @@ export default {
     },
   },
   watch: {
-    account(newVal) {
-      this.syncAllowance()
+    async account(newVal) {
+      await this.syncAllowance()
     },
-    approved(newVal) {
-      this.syncAll()
+    async approved(newVal) {
+      await this.syncAll()
     },
   },
   async created() {
@@ -398,10 +421,12 @@ export default {
       this.pendingHoney = amount
     },
     async syncAll() {
-      await this.syncEarnedHoney()
-      await this.syncPendingHoney()
-      await this.syncStakedAmount()
-      await this.syncTokenBalance()
+      await Promise.race([
+        this.syncEarnedHoney(),
+        this.syncPendingHoney(),
+        this.syncStakedAmount(),
+        this.syncTokenBalance(),
+      ])
     },
     async getApproval() {
       if (!this.account || !this.liquidityTokenInfo) {
@@ -409,7 +434,9 @@ export default {
         return
       }
 
+      this.waiting = true
       const tx = await this.lpTokenWrapper.approve(Addresses.honeycomb)
+      this.waiting = false
       Logger.log(tx)
       this.syncAllowance()
     },
@@ -419,6 +446,7 @@ export default {
       this.dialogMaxValue = this.tokenBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
+        this.waiting = true
         const tx = await this.honeycombWrapper.deposit(
           this.liquidityTokenInfo.pid,
           this.dialogValue
@@ -426,6 +454,7 @@ export default {
         Logger.log(tx)
         this.syncAll()
         this.dialogProcessing = false
+        this.waiting = false
         this.dialog = false
       }
       this.setDialogValue(1)
@@ -437,6 +466,7 @@ export default {
       this.dialogMaxValue = this.stakedBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
+        this.waiting = true
         const tx = await this.honeycombWrapper.withdraw(
           this.liquidityTokenInfo.pid,
           this.dialogValue
@@ -444,6 +474,7 @@ export default {
         Logger.log(tx)
         this.syncAll()
         this.dialogProcessing = false
+        this.waiting = false
         this.dialog = false
       }
       this.setDialogValue(1)
