@@ -178,11 +178,11 @@
 import BigNumber from 'bignumber.js'
 import SupportedLiquidityTokens from '@/lib/constants/SupportedLiquidityTokens'
 import { mapState } from 'vuex'
-import { formatBalance } from '@/utils/balance'
 import ERC20ContractWrapper from '@/lib/ERC20ContractWrapper'
 import HoneycombContractWrapper from '@/lib/HoneycombContractWrapper'
 import Addresses from '@/lib/constants/Addresses'
 import Logger from '@/lib/Logger'
+import AmountFormat from '@/lib/AmountFormat'
 
 export default {
   data: () => ({
@@ -209,19 +209,19 @@ export default {
       return this.$route.params.id
     },
     formattedEarnedHoney() {
-      return formatBalance(this.earnedHoney)
+      return AmountFormat.toDisplay(this.earnedHoney)
     },
     formattedPendingHoney() {
-      return formatBalance(this.pendingHoney)
+      return AmountFormat.toDisplay(this.pendingHoney)
     },
     formattedStakedBalance() {
-      return formatBalance(this.stakedBalance)
+      return AmountFormat.toDisplay(this.stakedBalance)
     },
     formattedTokenBalance() {
-      return formatBalance(this.tokenBalance)
+      return AmountFormat.toDisplay(this.tokenBalance)
     },
     formattedDialogMaxValue() {
-      return formatBalance(this.dialogMaxValue)
+      return AmountFormat.toDisplay(this.dialogMaxValue)
     },
   },
   watch: {
@@ -245,8 +245,11 @@ export default {
     this.honeycombWrapper = new HoneycombContractWrapper(this.$web3)
     await this.syncAllowance()
   },
-  mounted() {
+  async mounted() {
     this.$web3.addBlockProducedListener(this.syncAll)
+    Logger.log('startBlock', await this.honeycombWrapper.getStartBlock())
+    Logger.log('endBlock', await this.honeycombWrapper.getEndBlock())
+    Logger.log('honeyPerBlock', await this.honeycombWrapper.getHoneyPerBlock())
   },
   unmounted() {
     this.$web3.removeBlockProducedListener(this.syncAll)
@@ -302,7 +305,6 @@ export default {
       this.pendingHoney = amount
     },
     async syncAll() {
-      Logger.log('sync')
       await this.syncEarnedHoney()
       await this.syncPendingHoney()
       await this.syncStakedAmount()
@@ -355,10 +357,7 @@ export default {
       this.dialog = true
     },
     setDialogValue(multiplier) {
-      this.dialogValue = new BigNumber(multiplier)
-        .multipliedBy(this.dialogMaxValue)
-        .dividedBy(new BigNumber(10).pow(18))
-        .toFixed()
+      this.dialogValue = new BigNumber(multiplier).times(this.dialogMaxValue)
     },
     async collectHoney() {
       const tx = await this.honeycombWrapper.withdraw(
