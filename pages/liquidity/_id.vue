@@ -27,6 +27,70 @@
     <div v-else-if="account">
       <h1>Liquidity Token Bank: {{ liquidityTokenInfo.name }}</h1>
       <v-row>
+        <v-col v-if="currentBlock < startBlock" cols="12">
+          <v-alert
+            color="secondary darken-3"
+            icon="mdi-timer-sand-empty"
+            outlined
+            border="top"
+            prominent
+          >
+            <div class="title">Starting soon</div>
+            <div>
+              HONEY farming will begin at block height {{ startBlock }},
+              approximately <strong>{{ timeUntilStart }}</strong> later.
+            </div>
+            <v-divider class="my-3 secondary darken-3" />
+            <div>
+              You may deposit now and start earning HONEY as soon as the farming
+              begins.
+            </div>
+          </v-alert>
+        </v-col>
+        <v-col
+          v-if="currentBlock >= startBlock && currentBlock < endBlock"
+          cols="12"
+        >
+          <v-alert
+            color="primary"
+            icon="mdi-thumb-up-outline"
+            outlined
+            border="top"
+            prominent
+          >
+            <div class="title">Join now</div>
+            <div>
+              Stake {{ liquidityTokenInfo.name }} tokens to earn your yummy
+              HONEY!
+            </div>
+            <v-divider class="my-3 primary" />
+            <div>
+              Current HONEY farming stage will end at block height
+              {{ endBlock }}, approximately
+              <strong>{{ timeUntilEnd }}</strong> later.
+            </div>
+          </v-alert>
+        </v-col>
+        <v-col v-if="currentBlock > endBlock" cols="12">
+          <v-alert
+            color="deep-orange"
+            icon="mdi-timer-outline"
+            outlined
+            border="top"
+            prominent
+          >
+            <div class="title">Stage ended</div>
+            <div>
+              Current HONEY farming stage has ended at block height
+              {{ endBlock }}.
+            </div>
+            <v-divider class="my-3 deep-orange" />
+            <div>
+              You can withdraw your staked {{ liquidityTokenInfo.name }} tokens
+              along with your yummy HONEY harvest anytime!
+            </div>
+          </v-alert>
+        </v-col>
         <v-col cols="12" sm="6">
           <v-card>
             <v-toolbar color="secondary" dense flat>
@@ -88,6 +152,7 @@
               </v-btn>
               <v-btn
                 v-if="approved"
+                :disabled="currentBlock >= endBlock"
                 text
                 color="primary"
                 large
@@ -106,6 +171,17 @@
               </v-btn>
             </v-card-actions>
           </v-card>
+        </v-col>
+        <v-col cols="12">
+          <v-alert
+            icon="mdi-lightbulb"
+            color="secondary lighten-4"
+            class="my-6"
+          >
+            Every time you deposit and withdraw
+            {{ liquidityTokenInfo.name }} tokens, the contract will
+            automatically collect HONEY rewards for you!
+          </v-alert>
         </v-col>
       </v-row>
       <v-dialog v-model="dialog" persistent max-width="480px">
@@ -183,6 +259,7 @@ import HoneycombContractWrapper from '@/lib/HoneycombContractWrapper'
 import Addresses from '@/lib/constants/Addresses'
 import Logger from '@/lib/Logger'
 import AmountFormat from '@/lib/AmountFormat'
+import ChainInfo from '@/lib/constants/ChainInfo'
 
 export default {
   data: () => ({
@@ -202,6 +279,9 @@ export default {
     onDialogAction: null,
     dialogValue: null,
     dialogProcessing: false,
+    startBlock: null,
+    endBlock: null,
+    honeyPerBlock: null,
   }),
   computed: {
     ...mapState('account', { account: (state) => state.address }),
@@ -222,6 +302,19 @@ export default {
     },
     formattedDialogMaxValue() {
       return AmountFormat.toDisplay(this.dialogMaxValue)
+    },
+    currentBlock() {
+      return this.$web3.currentBlockHeight
+    },
+    timeUntilStart() {
+      const diff =
+        (this.startBlock - this.currentBlock) * ChainInfo.SecondsPerBlock
+      return this.timeDiffToString(diff)
+    },
+    timeUntilEnd() {
+      const diff =
+        (this.endBlock - this.currentBlock) * ChainInfo.SecondsPerBlock
+      return this.timeDiffToString(diff)
     },
   },
   watch: {
@@ -247,9 +340,9 @@ export default {
   },
   async mounted() {
     this.$web3.addBlockProducedListener(this.syncAll)
-    Logger.log('startBlock', await this.honeycombWrapper.getStartBlock())
-    Logger.log('endBlock', await this.honeycombWrapper.getEndBlock())
-    Logger.log('honeyPerBlock', await this.honeycombWrapper.getHoneyPerBlock())
+    this.startBlock = await this.honeycombWrapper.getStartBlock()
+    this.endBlock = await this.honeycombWrapper.getEndBlock()
+    this.honeyPerBlock = await this.honeycombWrapper.getHoneyPerBlock()
   },
   unmounted() {
     this.$web3.removeBlockProducedListener(this.syncAll)
@@ -366,6 +459,42 @@ export default {
       )
       Logger.log(tx)
       this.syncAll()
+    },
+    timeDiffToString(diff) {
+      const minutes = Math.floor(diff / 60) % 60
+      const hours = Math.floor(diff / 3600) % 24
+      const days = Math.floor(diff / 86400)
+      let result = ''
+      if (minutes === 1) {
+        result = '1 minute'
+      } else if (minutes > 1) {
+        result = `${minutes} minutes`
+      }
+
+      const minuteString = result.length > 0 ? ` and ${result}` : ''
+      if (hours === 1) {
+        result = `1 hour ${minuteString}`
+      } else if (hours > 1) {
+        result = `${hours} hours ${minuteString}`
+      }
+
+      const hourString =
+        result.length === 0
+          ? ''
+          : result.includes('and')
+          ? `, ${result}`
+          : ` and ${result}`
+      if (days === 1) {
+        result = `1 day ${hourString}`
+      } else if (days > 1) {
+        result = `${days} days ${hourString}`
+      }
+
+      if (result.length === 0) {
+        result = 'a few seconds'
+      }
+
+      return result
     },
   },
 }

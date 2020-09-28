@@ -3,6 +3,7 @@ import Logger from '@/lib/Logger'
 
 class Web3Wrapper {
   isSupported
+  currentBlockHeight
   currentAccount
   #web3
   #blockProducedListeners
@@ -29,44 +30,38 @@ class Web3Wrapper {
     this.#accountChangedListeners = new Map()
     this.#blockProducedEventSubsciption = null
 
+    this.#web3.eth.getBlockNumber().then((blockHeight) => {
+      this.currentBlockHeight = blockHeight
+    })
+
+    this.#blockProducedEventSubsciption = this.#web3.eth
+      .subscribe('newBlockHeaders')
+      .on('connected', (subscriptionId) => {
+        Logger.log('connected')
+      })
+      .on('data', (blockHeader) => {
+        if (blockHeader) {
+          this.currentBlockHeight = blockHeader.number
+        }
+        this.#blockProducedListeners.forEach((listener) => {
+          listener(blockHeader)
+        })
+      })
+      .on('error', (error) => {
+        Logger.error(error)
+      })
+
     setInterval(() => {
       this.checkCurrentAccount()
     }, 2000)
   }
 
-  async getCurrentBlockHeight() {
-    return await this._web3.eth.getBlockNumber()
-  }
-
   addBlockProducedListener(listener) {
-    if (this.#blockProducedListeners.size === 0) {
-      this.#blockProducedEventSubsciption = this.#web3.eth
-        .subscribe('newBlockHeaders')
-        .on('connected', (subscriptionId) => {
-          Logger.log('connected')
-        })
-        .on('data', (blockHeader) => {
-          this.#blockProducedListeners.forEach((listener) => {
-            listener(blockHeader)
-          })
-        })
-        .on('error', (error) => {
-          Logger.error(error)
-        })
-    }
-
     this.#blockProducedListeners.set(listener, listener)
   }
 
   removeBlockProducedListener(listener) {
     this.#blockProducedListeners.delete(listener)
-    if (
-      this.#blockProducedListeners.size === 0 &&
-      this.#blockProducedEventSubsciption != null
-    ) {
-      this.#blockProducedEventSubsciption.unsubscribe()
-      this.#blockProducedEventSubsciption = null
-    }
   }
 
   async connect() {
