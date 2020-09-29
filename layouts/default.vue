@@ -24,6 +24,12 @@
       </div>
     </v-app-bar>
     <v-main>
+      <v-banner color="warning" single-line transition="slide-y-transition">
+        This project is in beta. Use at your own risk.
+        <template v-slot:actions="{ dismiss }">
+          <v-btn text color="primary" @click="dismiss"> Dismiss </v-btn>
+        </template>
+      </v-banner>
       <v-container>
         <nuxt />
       </v-container>
