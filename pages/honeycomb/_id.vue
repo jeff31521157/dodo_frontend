@@ -1,30 +1,12 @@
 <template>
   <v-container fluid>
-    <v-alert
-      v-if="isInvalidParam"
-      color="error"
-      dark
-      icon="mdi-alert-circle"
-      border="left"
-      class="ma-10"
-      outlined
-    >
-      Invalid URL
-    </v-alert>
-
-    <v-alert
-      v-else-if="!account"
-      color="info"
-      dark
-      icon="mdi-wallet"
-      border="left"
-      class="ma-10"
-      outlined
-    >
-      Please connect your wallet to begin
-    </v-alert>
-
-    <div v-else-if="account">
+    <v-overlay v-if="!account" absolute>
+      <v-alert color="info" icon="mdi-wallet" border="left" prominent>
+        <div class="title">Account required</div>
+        <div>Please connect your wallet to begin</div>
+      </v-alert>
+    </v-overlay>
+    <div v-else>
       <PageHeader title="Honeycomb" :subtitle="liquidityTokenInfo.name" />
       <v-row>
         <v-col v-if="currentBlock < startBlock" cols="12">
@@ -284,10 +266,14 @@ import AmountFormat from '@/lib/AmountFormat'
 import ChainInfo from '@/lib/constants/ChainInfo'
 
 export default {
+  middleware({ route, redirect }) {
+    if (!SupportedLiquidityTokens[route.params.id]) {
+      return redirect('/honeycomb')
+    }
+  },
   data: () => ({
     lpTokenWrapper: null,
     honeycombWrapper: null,
-    isInvalidParam: false,
     liquidityTokenInfo: null,
     approved: false,
     earnedHoney: 0,
@@ -308,9 +294,6 @@ export default {
   }),
   computed: {
     ...mapState('account', { account: (state) => state.address }),
-    urlParam() {
-      return this.$route.params.id
-    },
     formattedEarnedHoney() {
       return AmountFormat.toDisplay(this.earnedHoney)
     },
@@ -349,11 +332,7 @@ export default {
     },
   },
   async created() {
-    this.liquidityTokenInfo = SupportedLiquidityTokens[this.urlParam]
-    if (this.liquidityTokenInfo === undefined) {
-      this.isInvalidParam = true
-      return
-    }
+    this.liquidityTokenInfo = SupportedLiquidityTokens[this.$route.params.id]
     this.lpTokenWrapper = new ERC20ContractWrapper(
       this.$web3,
       this.liquidityTokenInfo.tokenAddress

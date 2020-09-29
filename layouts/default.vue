@@ -31,7 +31,17 @@
         </template>
       </v-banner>
       <v-container>
-        <nuxt />
+        <nuxt v-if="isWeb3Supported" />
+        <v-overlay v-else>
+          <v-alert icon="mdi-close" border="left" prominent>
+            <div class="title">Not supported</div>
+            <div>
+              This website runs on Ethereum blockchain. Please install
+              <a href="https://metamask.io/">MetaMask Chrome extention</a> to
+              continue.
+            </div>
+          </v-alert>
+        </v-overlay>
       </v-container>
     </v-main>
     <v-footer app>
