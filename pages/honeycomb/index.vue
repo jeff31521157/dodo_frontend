@@ -1,11 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h3 text-sm-h1 text-center text--primary my-sm-6">
-      Honeycomb
-    </h1>
-    <h2 class="text-h5 text-sm-h4 text-center text--secondary my-sm-4">
-      Liquidity mining
-    </h2>
+    <PageHeader title="Honeycomb" subtitle="Liquidity mining" />
     <v-row>
       <v-col cols="12" sm="6" md="4">
         <v-card nuxt to="/honeycomb/COS-ETH">

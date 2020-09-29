@@ -1,11 +1,9 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h3 text-sm-h1 text-center text--primary my-sm-6">
-      Honey Finance
-    </h1>
-    <h2 class="text-h5 text-sm-h4 text-center text--secondary my-sm-4">
-      Beeees! Let's make some honey!
-    </h2>
+    <PageHeader
+      title="Honey Finance"
+      subtitle="Beeees! Let's make some honey!"
+    />
     <v-row>
       <v-col cols="12" sm="6" md="4">
         <v-card nuxt to="/honeycomb/">

@@ -25,12 +25,7 @@
     </v-alert>
 
     <div v-else-if="account">
-      <h1 class="text-h3 text-sm-h1 text-center text--primary my-sm-6">
-        Honeycomb
-      </h1>
-      <h2 class="text-h5 text-sm-h4 text-center text--secondary my-sm-4">
-        {{ liquidityTokenInfo.name }}
-      </h2>
+      <PageHeader title="Honeycomb" :subtitle="liquidityTokenInfo.name" />
       <v-row>
         <v-col v-if="currentBlock < startBlock" cols="12">
           <v-alert
