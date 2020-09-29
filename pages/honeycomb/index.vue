@@ -1,9 +1,14 @@
 <template>
   <v-container fluid>
-    <h1>Liquidity Token Banks</h1>
+    <h1 class="text-h3 text-sm-h1 text-center text--primary my-sm-6">
+      Honeycomb
+    </h1>
+    <h2 class="text-h5 text-sm-h4 text-center text--secondary my-sm-4">
+      Liquidity mining
+    </h2>
     <v-row>
-      <v-col cols="4">
-        <v-card>
+      <v-col cols="12" sm="6" md="4">
+        <v-card nuxt to="/honeycomb/COS-ETH">
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
             height="200px"
@@ -23,26 +28,34 @@
               dense
               color="secondary"
             >
-              APY: 100%
+              FRESH
             </v-alert>
             <v-spacer />
-            <v-btn text color="primary" nuxt to="COS-ETH">Earn</v-btn>
+            <v-btn text color="primary" nuxt to="/honeycomb/COS-ETH">
+              Earn
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
 
-      <v-col cols="4">
-        <v-card>
+      <v-col cols="12" sm="6" md="4">
+        <v-card disabled>
           <v-img
             :src="require('@/assets/images/honeycomb-dark.jpg')"
+            gradient="to top right, rgba(255, 255, 255, .66), rgba(255, 255, 255, 1)"
             height="200px"
           />
-          <v-avatar size="64" class="icon elevation-4">
-            <v-img src="/token-icons/usdt.png" />
+          <v-avatar size="64" class="icon elevation-4" color="white">
+            <v-img
+              src="/honey-logo.png"
+              aspect-ratio="1"
+              max-width="40"
+              contain
+            />
           </v-avatar>
-          <v-card-title>Honeycomb for USDT</v-card-title>
+          <v-card-title>Honeycomb for HONEY</v-card-title>
           <v-card-subtitle>
-            Deposit <strong>USDT-ETH UNI-V2 LP</strong> to earn HONEY
+            Deposit <strong>HONEY-ETH UNI-V2 LP</strong> to earn HONEY
           </v-card-subtitle>
           <v-divider />
           <v-card-actions>
@@ -52,10 +65,11 @@
         </v-card>
       </v-col>
 
-      <v-col cols="4">
-        <v-card>
+      <v-col cols="12" sm="6" md="4">
+        <v-card disabled>
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
+            gradient="to top right, rgba(255, 255, 255, .66), rgba(255, 255, 255, 1)"
             height="200px"
           />
           <v-avatar size="64" class="icon elevation-4" color="primary">
@@ -78,6 +92,5 @@
   position: absolute;
   right: 16px;
   top: 168px;
-  z-index: 99;
 }
 </style>
