@@ -17,13 +17,9 @@
             height="200px"
           />
           <v-card-text>
-            Et harum quidem rerum facilis est et expedita distinctio. Nam libero
-            tempore, cum soluta nobis est eligendi optio cumque nihil impedit
-            quo minus id quod maxime placeat facere possimus, omnis voluptas
-            assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
-            et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
-            voluptates repudiandae sint et molestiae non recusandae. Itaque
-            earum rerum hic tenetur.
+            Honeycomb allows users to farm HONEY rewards with each new block
+            based on staking LP tokens they receive from providing liquidity in
+            Uniswap V2.
           </v-card-text>
           <v-divider />
           <v-card-actions>
@@ -45,13 +41,8 @@
             height="200px"
           />
           <v-card-text>
-            Et harum quidem rerum facilis est et expedita distinctio. Nam libero
-            tempore, cum soluta nobis est eligendi optio cumque nihil impedit
-            quo minus id quod maxime placeat facere possimus, omnis voluptas
-            assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
-            et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
-            voluptates repudiandae sint et molestiae non recusandae. Itaque
-            earum rerum hic tenetur.
+            Honey Jar empowers the wider community to safely and efficiently
+            yield farm for returns by just depositing their funds.
           </v-card-text>
           <v-divider />
           <v-card-actions>
@@ -73,13 +64,9 @@
             height="200px"
           />
           <v-card-text>
-            Et harum quidem rerum facilis est et expedita distinctio. Nam libero
-            tempore, cum soluta nobis est eligendi optio cumque nihil impedit
-            quo minus id quod maxime placeat facere possimus, omnis voluptas
-            assumenda est, omnis dolor repellendus. Temporibus autem quibusdam
-            et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et
-            voluptates repudiandae sint et molestiae non recusandae. Itaque
-            earum rerum hic tenetur.
+            Honey Congress is governed by HONEY holders, who will challenge
+            existing system, raise new views and voting for changes to benefit
+            the wider Honey Community.
           </v-card-text>
           <v-divider />
           <v-card-actions>
