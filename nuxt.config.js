@@ -6,7 +6,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    // titleTemplate: '%s - vue-honey',
+    titleTemplate: '%s - Honey Finance',
     title: 'Honey Finance',
     meta: [
       { charset: 'utf-8' },

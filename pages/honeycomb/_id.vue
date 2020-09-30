@@ -266,11 +266,6 @@ import AmountFormat from '@/lib/AmountFormat'
 import ChainInfo from '@/lib/constants/ChainInfo'
 
 export default {
-  middleware({ route, redirect }) {
-    if (!SupportedLiquidityTokens[route.params.id]) {
-      return redirect('/honeycomb')
-    }
-  },
   data: () => ({
     lpTokenWrapper: null,
     honeycombWrapper: null,
@@ -292,6 +287,11 @@ export default {
     honeyPerBlock: null,
     waiting: false,
   }),
+  middleware({ route, redirect }) {
+    if (!SupportedLiquidityTokens[route.params.id]) {
+      return redirect('/honeycomb')
+    }
+  },
   computed: {
     ...mapState('account', { account: (state) => state.address }),
     formattedEarnedHoney() {
@@ -506,6 +506,11 @@ export default {
 
       return result
     },
+  },
+  head() {
+    return {
+      title: `Honeycomb (${this.liquidityTokenInfo.name})`,
+    }
   },
 }
 </script>

@@ -82,6 +82,13 @@
     </v-row>
   </v-container>
 </template>
+<script>
+export default {
+  head: {
+    title: 'Honeycomb',
+  },
+}
+</script>
 <style scoped>
 .icon {
   position: absolute;
