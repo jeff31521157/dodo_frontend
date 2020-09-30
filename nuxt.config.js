@@ -37,6 +37,8 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    // https://www.npmjs.com/package/@nuxtjs/google-gtag
+    '@nuxtjs/google-gtag',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -59,6 +61,18 @@ export default {
         },
       },
     },
+  },
+
+  'google-gtag': {
+    id: 'G-581WDZTH7M', // required
+    config: {
+      // this are the config options for `gtag
+      // check out official docs: https://developers.google.com/analytics/devguides/collection/gtagjs/
+      anonymize_ip: true, // anonymize IP
+      send_page_view: true, // might be necessary to avoid duplicated page track on page reload
+    },
+    debug: true, // enable to track in dev mode
+    disableAutoPageTrack: false, // disable if you don't want to track each page route with router.afterEach(...)
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
