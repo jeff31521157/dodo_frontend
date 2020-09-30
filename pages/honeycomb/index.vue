@@ -3,7 +3,7 @@
     <PageHeader title="Honeycomb" subtitle="Liquidity mining" />
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-card nuxt to="/honeycomb/COS-ETH" disabled>
+        <v-card nuxt to="/honeycomb/COS-ETH">
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
             height="200px"
@@ -17,19 +17,18 @@
           </v-card-subtitle>
           <v-divider />
           <v-card-actions>
-            <!-- <v-alert
+            <v-alert
               icon="mdi-trending-up"
               class="my-0"
               dense
               color="secondary"
             >
               FRESH
-            </v-alert> -->
+            </v-alert>
             <v-spacer />
-            <!-- <v-btn text color="primary" nuxt to="/honeycomb/COS-ETH">
+            <v-btn text color="primary" nuxt to="/honeycomb/COS-ETH">
               Earn
-            </v-btn> -->
-            <v-btn text color="primary" disabled>Coming soon</v-btn>
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
