@@ -58,7 +58,7 @@
           {{ link.name }}
         </v-btn>
         <v-col class="primary lighten-2 py-3 text-center white--text" cols="12">
-          &copy; {{ new Date().getFullYear() }} <strong>Honey Protocol</strong>
+          &copy; {{ new Date().getFullYear() }} <strong>Honey Finance</strong>
         </v-col>
       </v-row>
     </v-footer>
