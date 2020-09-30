@@ -1,13 +1,13 @@
 <template>
-  <v-app dark>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/"> Home page </NuxtLink>
-  </v-app>
+  <v-overlay>
+    <v-alert icon="mdi-alert-decagram" border="left" prominent>
+      <div class="title">Oops!</div>
+      <div>
+        Honey, you are not supposed to see this. Try refresh the page and
+        everything should be back to normal.
+      </div>
+    </v-alert>
+  </v-overlay>
 </template>
 
 <script>
@@ -34,9 +34,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-h1 {
-  font-size: 20px;
-}
-</style>
