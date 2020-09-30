@@ -53,6 +53,7 @@
           :nuxt="link.to !== undefined"
           :to="link.to"
           :href="link.href"
+          :target="link.href ? '_blank' : ''"
         >
           {{ link.name }}
         </v-btn>
@@ -74,8 +75,13 @@ export default {
       { name: 'Twitter', href: 'https://twitter.com/myHoneyFinance' },
       { name: 'Discord', href: 'https://discord.gg/ABSTBw3' },
       { name: 'Medium', href: 'https://medium.com/@myHoneyFinance' },
-      // { name: 'GitHub', href: '#' },
-      // { name: 'Etherscan', href: '#' },
+      { name: 'News', href: 'https://myhoney.finance/blog/' },
+      { name: 'GitHub', href: 'https://github.com/HoneyFinance' },
+      {
+        name: 'Etherscan',
+        href:
+          'https://etherscan.io/token/0x37C9EB4CeF7571f27136145C82c37a01F2a8Aa16',
+      },
     ],
   }),
   computed: {

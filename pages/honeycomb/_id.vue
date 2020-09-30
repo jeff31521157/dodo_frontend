@@ -177,6 +177,42 @@
             automatically collect HONEY rewards for you!
           </v-alert>
         </v-col>
+
+        <v-col cols="12" class="my-0 py-0">
+          <v-alert color="pink" outlined dense border="left">
+            <v-row align="center">
+              <v-col class="grow py-0">
+                You can get more {{ liquidityTokenInfo.name }} tokens by
+                providing liquidity at Uniswap
+              </v-col>
+              <v-col class="shrink py-0">
+                <v-btn
+                  text
+                  color="primary"
+                  href="https://app.uniswap.org/#/add/ETH/0x589891a198195061Cb8ad1a75357A3b7DbaDD7Bc"
+                  target="_blank"
+                >
+                  Go to Uniswap
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-alert>
+        </v-col>
+
+        <v-col cols="12" class="my-0 py-0">
+          <v-alert color="primary" outlined border="left">
+            You may need to input <strong>HONEY</strong> token contract address
+            <strong>
+              <a
+                href="https://etherscan.io/token/0x37C9EB4CeF7571f27136145C82c37a01F2a8Aa16"
+                target="_blank"
+              >
+                0x37C9EB4CeF7571f27136145C82c37a01F2a8Aa16
+              </a>
+            </strong>
+            to reveal the asset in your wallet
+          </v-alert>
+        </v-col>
       </v-row>
       <v-dialog v-model="dialog" persistent max-width="480px">
         <v-card>
