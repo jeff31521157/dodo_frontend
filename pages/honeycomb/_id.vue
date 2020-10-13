@@ -7,7 +7,25 @@
       </v-alert>
     </v-overlay>
     <div v-else-if="honeycomb">
-      <PageHeader title="Honeycomb" :subtitle="honeycomb.name" />
+      <PageHeader title="Honeycomb" :subtitle="honeycomb.lpTokenName" />
+      <div class="text-center">
+        <v-chip outlined class="mx-1" color="primary">
+          Stage&nbsp;
+          <strong>{{ honeycomb.isV1 ? 1 : honeycomb.batch + 2 }}</strong>
+        </v-chip>
+        <v-chip
+          outlined
+          class="mx-1"
+          :color="honeycomb.efficiency > 1 ? 'deep-orange' : 'primary'"
+        >
+          Mining Efficiency:&nbsp;
+          <strong>{{ honeycomb.efficiency }}X</strong>
+        </v-chip>
+        <v-chip outlined class="mx-1" color="primary">
+          APY:&nbsp;
+          <strong>{{ honeycomb.apy }}</strong>
+        </v-chip>
+      </div>
       <v-row>
         <v-col v-if="currentBlock < honeycomb.startBlock" cols="12">
           <v-alert
@@ -46,7 +64,7 @@
           >
             <div class="title">Join now</div>
             <div>
-              Stake {{ honeycomb.name }} tokens to earn your yummy HONEY!
+              Stake {{ honeycomb.lpTokenName }} tokens to earn your yummy HONEY!
             </div>
             <v-divider class="my-3 primary" />
             <div>
@@ -71,8 +89,8 @@
             </div>
             <v-divider class="my-3 deep-orange" />
             <div>
-              You can withdraw your staked {{ honeycomb.name }} tokens along
-              with your yummy HONEY harvest anytime!
+              You can withdraw your staked {{ honeycomb.lpTokenName }} tokens
+              along with your yummy HONEY harvest anytime!
             </div>
           </v-alert>
         </v-col>
@@ -116,7 +134,7 @@
               <v-avatar size="32" class="mr-4">
                 <v-img :src="`/token-icons/${honeycomb.icon}`" />
               </v-avatar>
-              <v-toolbar-title>My {{ honeycomb.name }}</v-toolbar-title>
+              <v-toolbar-title>My {{ honeycomb.lpTokenName }}</v-toolbar-title>
             </v-toolbar>
             <v-card-subtitle class="pb-0">Staked</v-card-subtitle>
             <v-card-title class="text-h3">
@@ -164,7 +182,7 @@
         <v-col v-if="!honeycomb.userApproved" cols="12">
           <v-alert icon="mdi-flash" color="secondary lighten-4" class="mt-6">
             Please approve the Honeycomb contract to access your
-            {{ honeycomb.name }} tokens
+            {{ honeycomb.lpTokenName }} tokens
           </v-alert>
         </v-col>
         <v-col v-else cols="12">
@@ -174,16 +192,16 @@
             class="mt-6"
           >
             Every time you deposit and withdraw
-            {{ honeycomb.name }} tokens, the Honeycomb contract will
+            {{ honeycomb.lpTokenName }} tokens, the Honeycomb contract will
             automatically collect HONEY rewards for you!
           </v-alert>
         </v-col>
 
         <v-col cols="12" class="my-0 py-0">
-          <v-alert color="pink" outlined dense border="left">
+          <v-alert color="pink" outlined border="left">
             <v-row align="center">
               <v-col class="grow py-0">
-                You can get more {{ honeycomb.name }} tokens by providing
+                You can get more {{ honeycomb.lpTokenName }} tokens by providing
                 liquidity at Uniswap
               </v-col>
               <v-col class="shrink py-0">
@@ -225,7 +243,7 @@
               v-model="dialogValue"
               type="number"
               label="Amount"
-              :suffix="honeycomb.name"
+              :suffix="honeycomb.lpTokenName"
               :hint="`Available: ${formattedDialogMaxValue}`"
               persistent-hint
               required
@@ -369,6 +387,7 @@ export default {
     this.honeycomb = HoneycombFactory.create(this.$route.params.id, this.$web3)
     await this.honeycomb.syncBatchInfo()
     await this.honeycomb.syncAll()
+    await this.honeycomb.calculateAPY()
   },
   mounted() {
     this.$web3.addBlockProducedListener(this.syncData)
@@ -462,7 +481,7 @@ export default {
   },
   head() {
     return {
-      title: `Honeycomb (${this.honeycomb.name})`,
+      title: `Honeycomb (${this.honeycomb.lpTokenName})`,
     }
   },
 }
