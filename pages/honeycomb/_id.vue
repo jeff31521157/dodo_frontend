@@ -6,10 +6,10 @@
         <div>Please connect your wallet to begin</div>
       </v-alert>
     </v-overlay>
-    <div v-else>
-      <PageHeader title="Honeycomb" :subtitle="liquidityTokenInfo.name" />
+    <div v-else-if="honeycomb">
+      <PageHeader title="Honeycomb" :subtitle="honeycomb.name" />
       <v-row>
-        <v-col v-if="currentBlock < startBlock" cols="12">
+        <v-col v-if="currentBlock < honeycomb.startBlock" cols="12">
           <v-alert
             color="secondary darken-3"
             icon="mdi-timer-sand-empty"
@@ -19,8 +19,9 @@
           >
             <div class="title">Starting soon</div>
             <div>
-              HONEY farming will begin at block height {{ startBlock }},
-              approximately <strong>{{ timeUntilStart }}</strong> later.
+              HONEY farming will begin at block height
+              {{ honeycomb.startBlock }}, approximately
+              <strong>{{ timeUntilStart }}</strong> later.
             </div>
             <v-divider class="my-3 secondary darken-3" />
             <div>
@@ -30,7 +31,10 @@
           </v-alert>
         </v-col>
         <v-col
-          v-if="currentBlock >= startBlock && currentBlock < endBlock"
+          v-if="
+            currentBlock >= honeycomb.startBlock &&
+            currentBlock < honeycomb.endBlock
+          "
           cols="12"
         >
           <v-alert
@@ -42,18 +46,17 @@
           >
             <div class="title">Join now</div>
             <div>
-              Stake {{ liquidityTokenInfo.name }} tokens to earn your yummy
-              HONEY!
+              Stake {{ honeycomb.name }} tokens to earn your yummy HONEY!
             </div>
             <v-divider class="my-3 primary" />
             <div>
               Current HONEY farming stage will end at block height
-              {{ endBlock }}, approximately
+              {{ honeycomb.endBlock }}, approximately
               <strong>{{ timeUntilEnd }}</strong> later.
             </div>
           </v-alert>
         </v-col>
-        <v-col v-if="currentBlock > endBlock" cols="12">
+        <v-col v-if="currentBlock > honeycomb.endBlock" cols="12">
           <v-alert
             color="deep-orange"
             icon="mdi-timer-outline"
@@ -64,12 +67,12 @@
             <div class="title">Stage ended</div>
             <div>
               Current HONEY farming stage has ended at block height
-              {{ endBlock }}.
+              {{ honeycomb.endBlock }}.
             </div>
             <v-divider class="my-3 deep-orange" />
             <div>
-              You can withdraw your staked {{ liquidityTokenInfo.name }} tokens
-              along with your yummy HONEY harvest anytime!
+              You can withdraw your staked {{ honeycomb.name }} tokens along
+              with your yummy HONEY harvest anytime!
             </div>
           </v-alert>
         </v-col>
@@ -99,7 +102,7 @@
                 text
                 color="primary"
                 large
-                :disabled="!approved"
+                :disabled="!honeycomb.userApproved"
                 @click="collectHoney"
               >
                 Collect
@@ -109,13 +112,11 @@
         </v-col>
         <v-col cols="12" sm="6">
           <v-card>
-            <v-toolbar :color="liquidityTokenInfo.color" dense flat dark>
+            <v-toolbar :color="honeycomb.themeColor" dense flat dark>
               <v-avatar size="32" class="mr-4">
-                <v-img :src="`/token-icons/${liquidityTokenInfo.icon}`" />
+                <v-img :src="`/token-icons/${honeycomb.icon}`" />
               </v-avatar>
-              <v-toolbar-title>
-                My {{ liquidityTokenInfo.name }}
-              </v-toolbar-title>
+              <v-toolbar-title>My {{ honeycomb.name }}</v-toolbar-title>
             </v-toolbar>
             <v-card-subtitle class="pb-0">Staked</v-card-subtitle>
             <v-card-title class="text-h3">
@@ -124,13 +125,13 @@
             <v-divider />
             <v-card-subtitle class="pb-0">Account balance</v-card-subtitle>
             <v-card-title class="text-h3">
-              {{ approved ? formattedTokenBalance : 'N/A' }}
+              {{ honeycomb.userApproved ? formattedTokenBalance : 'N/A' }}
             </v-card-title>
             <v-divider />
             <v-card-actions>
               <v-spacer />
               <v-btn
-                v-if="!approved"
+                v-if="!honeycomb.userApproved"
                 text
                 color="primary"
                 large
@@ -139,8 +140,8 @@
                 Approve
               </v-btn>
               <v-btn
-                v-if="approved"
-                :disabled="currentBlock >= endBlock"
+                v-if="honeycomb.userApproved"
+                :disabled="currentBlock >= honeycomb.endBlock"
                 text
                 color="primary"
                 large
@@ -149,7 +150,7 @@
                 Deposit
               </v-btn>
               <v-btn
-                v-if="approved"
+                v-if="honeycomb.userApproved"
                 text
                 color="primary"
                 large
@@ -160,10 +161,10 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-col v-if="!approved" cols="12">
+        <v-col v-if="!honeycomb.userApproved" cols="12">
           <v-alert icon="mdi-flash" color="secondary lighten-4" class="mt-6">
             Please approve the Honeycomb contract to access your
-            {{ liquidityTokenInfo.name }} tokens
+            {{ honeycomb.name }} tokens
           </v-alert>
         </v-col>
         <v-col v-else cols="12">
@@ -173,7 +174,7 @@
             class="mt-6"
           >
             Every time you deposit and withdraw
-            {{ liquidityTokenInfo.name }} tokens, the Honeycomb contract will
+            {{ honeycomb.name }} tokens, the Honeycomb contract will
             automatically collect HONEY rewards for you!
           </v-alert>
         </v-col>
@@ -182,14 +183,14 @@
           <v-alert color="pink" outlined dense border="left">
             <v-row align="center">
               <v-col class="grow py-0">
-                You can get more {{ liquidityTokenInfo.name }} tokens by
-                providing liquidity at Uniswap
+                You can get more {{ honeycomb.name }} tokens by providing
+                liquidity at Uniswap
               </v-col>
               <v-col class="shrink py-0">
                 <v-btn
                   text
                   color="primary"
-                  href="https://app.uniswap.org/#/add/ETH/0x589891a198195061Cb8ad1a75357A3b7DbaDD7Bc"
+                  :href="`https://app.uniswap.org/#/add/ETH/${honeycomb.tokenAddress}`"
                   target="_blank"
                 >
                   Go to Uniswap
@@ -224,7 +225,7 @@
               v-model="dialogValue"
               type="number"
               label="Amount"
-              :suffix="liquidityTokenInfo.name"
+              :suffix="honeycomb.name"
               :hint="`Available: ${formattedDialogMaxValue}`"
               persistent-hint
               required
@@ -292,25 +293,14 @@
 </template>
 <script>
 import BigNumber from 'bignumber.js'
-import SupportedLiquidityTokens from '@/lib/constants/SupportedLiquidityTokens'
+import HoneycombFactory from '@/lib/honeycomb/HoneycombFactory'
 import { mapState } from 'vuex'
-import ERC20ContractWrapper from '@/lib/ERC20ContractWrapper'
-import HoneycombContractWrapper from '@/lib/HoneycombContractWrapper'
-import Addresses from '@/lib/constants/Addresses'
-import Logger from '@/lib/Logger'
 import AmountFormat from '@/lib/AmountFormat'
 import ChainInfo from '@/lib/constants/ChainInfo'
 
 export default {
   data: () => ({
-    lpTokenWrapper: null,
-    honeycombWrapper: null,
-    liquidityTokenInfo: null,
-    approved: false,
-    earnedHoney: 0,
-    pendingHoney: 0,
-    stakedBalance: 0,
-    tokenBalance: 0,
+    honeycomb: null,
     dialog: false,
     dialogTitle: null,
     dialogAction: null,
@@ -318,29 +308,34 @@ export default {
     onDialogAction: null,
     dialogValue: null,
     dialogProcessing: false,
-    startBlock: null,
-    endBlock: null,
-    honeyPerBlock: null,
     waiting: false,
   }),
   middleware({ route, redirect }) {
-    if (!SupportedLiquidityTokens[route.params.id]) {
+    if (!HoneycombFactory.isPathValid(route.params.id)) {
       return redirect('/honeycomb')
     }
   },
   computed: {
     ...mapState('account', { account: (state) => state.address }),
     formattedEarnedHoney() {
-      return AmountFormat.toDisplay(this.earnedHoney)
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.earnedHoney : 0
+      )
     },
     formattedPendingHoney() {
-      return AmountFormat.toDisplay(this.pendingHoney)
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.pendingHoney : 0
+      )
     },
     formattedStakedBalance() {
-      return AmountFormat.toDisplay(this.stakedBalance)
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.stakedBalance : 0
+      )
     },
     formattedTokenBalance() {
-      return AmountFormat.toDisplay(this.tokenBalance)
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.lpTokenBalance : 0
+      )
     },
     formattedDialogMaxValue() {
       return AmountFormat.toDisplay(this.dialogMaxValue)
@@ -349,125 +344,57 @@ export default {
       return this.$web3.currentBlockHeight
     },
     timeUntilStart() {
-      const diff =
-        (this.startBlock - this.currentBlock) * ChainInfo.SecondsPerBlock
+      const diff = this.honeycomb
+        ? (this.honeycomb.startBlock - this.currentBlock) *
+          ChainInfo.SecondsPerBlock
+        : 0
       return this.timeDiffToString(diff)
     },
     timeUntilEnd() {
-      const diff =
-        (this.endBlock - this.currentBlock) * ChainInfo.SecondsPerBlock
+      const diff = this.honeycomb
+        ? (this.honeycomb.endBlock - this.currentBlock) *
+          ChainInfo.SecondsPerBlock
+        : 0
       return this.timeDiffToString(diff)
     },
   },
   watch: {
     async account(newVal) {
-      await this.syncAllowance()
-    },
-    async approved(newVal) {
-      await this.syncAll()
+      if (this.honeycomb) {
+        await this.honeycomb.syncAll()
+      }
     },
   },
   async created() {
-    this.liquidityTokenInfo = SupportedLiquidityTokens[this.$route.params.id]
-    this.lpTokenWrapper = new ERC20ContractWrapper(
-      this.$web3,
-      this.liquidityTokenInfo.tokenAddress
-    )
-    this.honeycombWrapper = new HoneycombContractWrapper(this.$web3)
-    await this.syncAllowance()
+    this.honeycomb = HoneycombFactory.create(this.$route.params.id, this.$web3)
+    await this.honeycomb.syncBatchInfo()
+    await this.honeycomb.syncAll()
   },
-  async mounted() {
-    this.$web3.addBlockProducedListener(this.syncAll)
-    this.startBlock = await this.honeycombWrapper.getStartBlock()
-    this.endBlock = await this.honeycombWrapper.getEndBlock()
-    this.honeyPerBlock = await this.honeycombWrapper.getHoneyPerBlock()
+  mounted() {
+    this.$web3.addBlockProducedListener(this.syncData)
   },
   unmounted() {
-    this.$web3.removeBlockProducedListener(this.syncAll)
+    this.$web3.removeBlockProducedListener(this.syncData)
   },
   methods: {
-    async syncAllowance() {
-      if (!this.account || !this.liquidityTokenInfo) {
-        this.approved = false
-        return
+    async syncData() {
+      if (this.honeycomb) {
+        await this.honeycomb.syncAll()
       }
-
-      const allowance = await this.lpTokenWrapper.getAllowance(
-        Addresses.honeycomb
-      )
-      this.approved = allowance > 0
-    },
-    async syncTokenBalance() {
-      if (!this.account || !this.liquidityTokenInfo) {
-        return
-      }
-
-      const amount = await this.lpTokenWrapper.getBalance()
-      this.tokenBalance = amount
-    },
-    async syncStakedAmount() {
-      if (!this.account || !this.liquidityTokenInfo) {
-        return
-      }
-
-      const amount = await this.honeycombWrapper.getStakedAmount(
-        this.liquidityTokenInfo.pid
-      )
-      this.stakedBalance = amount
-    },
-    async syncEarnedHoney() {
-      if (!this.account || !this.liquidityTokenInfo) {
-        return
-      }
-
-      const amount = await this.honeycombWrapper.getEarnedHoney(
-        this.liquidityTokenInfo.pid
-      )
-      this.earnedHoney = amount
-    },
-    async syncPendingHoney() {
-      if (!this.account || !this.liquidityTokenInfo) {
-        return
-      }
-
-      const amount = await this.honeycombWrapper.getPendingHoney(
-        this.liquidityTokenInfo.pid
-      )
-      this.pendingHoney = amount
-    },
-    async syncAll() {
-      await Promise.race([
-        this.syncEarnedHoney(),
-        this.syncPendingHoney(),
-        this.syncStakedAmount(),
-        this.syncTokenBalance(),
-      ])
     },
     async getApproval() {
-      if (!this.account || !this.liquidityTokenInfo) {
-        this.tokenBalance = 0
-        return
-      }
-
       this.waiting = true
-      const tx = await this.lpTokenWrapper.approve(Addresses.honeycomb)
+      await this.honeycomb.getApproval()
       this.waiting = false
-      Logger.log(tx)
-      this.syncAllowance()
     },
     showDepositDialog() {
       this.dialogTitle = 'Deposit'
       this.dialogAction = 'Deposit'
-      this.dialogMaxValue = this.tokenBalance
+      this.dialogMaxValue = this.honeycomb.lpTokenBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
         this.waiting = true
-        const tx = await this.honeycombWrapper.deposit(
-          this.liquidityTokenInfo.pid,
-          this.dialogValue
-        )
-        Logger.log(tx)
-        this.syncAll()
+        await this.honeycomb.deposit(this.dialogValue)
         this.dialogProcessing = false
         this.waiting = false
         this.dialog = false
@@ -478,16 +405,11 @@ export default {
     showWithdrawDialog() {
       this.dialogTitle = 'Withdraw'
       this.dialogAction = 'Withdraw'
-      this.dialogMaxValue = this.stakedBalance
+      this.dialogMaxValue = this.honeycomb.stakedBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
         this.waiting = true
-        const tx = await this.honeycombWrapper.withdraw(
-          this.liquidityTokenInfo.pid,
-          this.dialogValue
-        )
-        Logger.log(tx)
-        this.syncAll()
+        await this.honeycomb.withdraw(this.dialogValue)
         this.dialogProcessing = false
         this.waiting = false
         this.dialog = false
@@ -499,12 +421,7 @@ export default {
       this.dialogValue = new BigNumber(multiplier).times(this.dialogMaxValue)
     },
     async collectHoney() {
-      const tx = await this.honeycombWrapper.withdraw(
-        this.liquidityTokenInfo.pid,
-        0
-      )
-      Logger.log(tx)
-      this.syncAll()
+      await this.honeycomb.withdraw(0)
     },
     timeDiffToString(diff) {
       const minutes = Math.floor(diff / 60) % 60
@@ -545,7 +462,7 @@ export default {
   },
   head() {
     return {
-      title: `Honeycomb (${this.liquidityTokenInfo.name})`,
+      title: `Honeycomb (${this.honeycomb.name})`,
     }
   },
 }
