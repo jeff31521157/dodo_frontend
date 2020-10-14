@@ -2,12 +2,20 @@
   <v-container fluid>
     <PageHeader title="Honeycomb" subtitle="Liquidity mining" />
     <v-row>
+      <v-col cols="12">
+        <v-banner>
+          <v-icon slot="icon" color="secondary" size="24">
+            mdi-trending-up
+          </v-icon>
+          <h3 class="text-h6 text--secondary">Stage 2</h3>
+        </v-banner>
+      </v-col>
       <v-col
-        v-for="(honeycomb, path) in honeycombs"
+        v-for="(honeycomb, path) in honeycombsS2"
         :key="path"
         cols="12"
         sm="6"
-        md="4"
+        lg="4"
       >
         <v-card nuxt :to="`/honeycomb/${path}`">
           <v-img
@@ -32,11 +40,11 @@
             </v-chip>
             <v-chip v-if="honeycomb.efficiency > 1" color="pink" dark>
               Mining @
-              <strong>3X</strong>
+              <strong>{{ honeycomb.efficiency }}X</strong>
             </v-chip>
             <v-chip color="primary lighten-2">
               APY:&nbsp;
-              <strong>200%</strong>
+              <strong>N/A</strong>
             </v-chip>
           </v-card-text>
           <v-divider />
@@ -48,22 +56,58 @@
           </v-card-actions>
         </v-card>
       </v-col>
-
-      <v-col cols="12" sm="6" md="4">
-        <v-card disabled>
+      <v-col cols="12">
+        <v-banner>
+          <v-icon slot="icon" color="secondary" size="24">
+            mdi-trending-up
+          </v-icon>
+          <h3 class="text-h6 text--secondary">Stage 1</h3>
+        </v-banner>
+      </v-col>
+      <v-col
+        v-for="(honeycomb, path) in honeycombsS1"
+        :key="path"
+        cols="12"
+        sm="6"
+        lg="4"
+      >
+        <v-card nuxt :to="`/honeycomb/${path}`">
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
-            gradient="to top right, rgba(255, 255, 255, .8), rgba(255, 255, 255, .9)"
+            gradient="to top right, rgba(255, 255, 255, .2), rgba(255, 255, 255, .3)"
             height="192px"
           >
             <div class="text-center">
-              <v-avatar size="128" class="ma-8 elevation-8" color="primary">
-                <span class="headline white--text">?</span>
+              <v-avatar size="128" class="ma-8 elevation-8">
+                <v-img :src="`/token-icons/${honeycomb.icon}`" />
               </v-avatar>
             </div>
           </v-img>
-          <v-card-title>???</v-card-title>
-          <v-card-subtitle>More to come</v-card-subtitle>
+          <v-card-title>Honeycomb for {{ honeycomb.tokenName }}</v-card-title>
+          <v-card-subtitle>
+            Deposit <strong>{{ honeycomb.lpTokenName }}</strong> to earn HONEY
+          </v-card-subtitle>
+          <v-card-text>
+            <v-chip :color="getStageColor(honeycomb)">
+              Stage&nbsp;
+              <strong>{{ getStage(honeycomb) }}</strong>
+            </v-chip>
+            <v-chip v-if="honeycomb.efficiency > 1" color="pink" dark>
+              Mining @
+              <strong>{{ honeycomb.efficiency }}X</strong>
+            </v-chip>
+            <v-chip color="primary lighten-2">
+              APY:&nbsp;
+              <strong>N/A</strong>
+            </v-chip>
+          </v-card-text>
+          <v-divider />
+          <v-card-actions>
+            <v-spacer />
+            <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
+              Earn
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -73,8 +117,11 @@
 import HoneycombFactory from '@/lib/honeycomb/HoneycombFactory'
 export default {
   computed: {
-    honeycombs() {
-      return HoneycombFactory.metadata()
+    honeycombsS1() {
+      return HoneycombFactory.metadataS1()
+    },
+    honeycombsS2() {
+      return HoneycombFactory.metadataS2()
     },
   },
   methods: {

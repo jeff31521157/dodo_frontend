@@ -14,12 +14,13 @@
           <strong>{{ honeycomb.isV1 ? 1 : honeycomb.batch + 2 }}</strong>
         </v-chip>
         <v-chip
-          outlined
           class="mx-1"
-          :color="honeycomb.efficiency > 1 ? 'deep-orange' : 'primary'"
+          :x-large="honeycomb.efficiency > 1"
+          :outlined="honeycomb.efficiency === 1"
+          :color="honeycomb.efficiency > 1 ? 'pink' : 'primary'"
+          :dark="honeycomb.efficiency > 1"
         >
-          Mining Efficiency:&nbsp;
-          <strong>{{ honeycomb.efficiency }}X</strong>
+          Mining @<strong>{{ honeycomb.efficiency }}X</strong>
         </v-chip>
         <v-chip outlined class="mx-1" color="primary">
           APY:&nbsp;
