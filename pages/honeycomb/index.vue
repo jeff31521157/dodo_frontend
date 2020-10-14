@@ -17,7 +17,7 @@
         sm="6"
         lg="4"
       >
-        <v-card nuxt :to="`/honeycomb/${path}`">
+        <v-card nuxt :to="`/honeycomb/${path}`" disabled>
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
             gradient="to top right, rgba(255, 255, 255, .2), rgba(255, 255, 255, .3)"
@@ -51,7 +51,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Earn
+              Coming soon
             </v-btn>
           </v-card-actions>
         </v-card>
