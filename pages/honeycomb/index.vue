@@ -98,7 +98,7 @@
             </v-chip>
             <v-chip color="primary lighten-2">
               APY:&nbsp;
-              <strong>N/A</strong>
+              <strong>{{ honeycomb.apy }}</strong>
             </v-chip>
           </v-card-text>
           <v-divider />
@@ -116,13 +116,16 @@
 <script>
 import HoneycombFactory from '@/lib/honeycomb/HoneycombFactory'
 export default {
+  data: () => ({
+    honeycombsS1: {},
+  }),
   computed: {
-    honeycombsS1() {
-      return HoneycombFactory.metadataS1()
-    },
     honeycombsS2() {
       return HoneycombFactory.metadataS2()
     },
+  },
+  created() {
+    this.honeycombsS1 = HoneycombFactory.stage1(this.$web3)
   },
   methods: {
     getStage(honeycomb) {
