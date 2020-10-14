@@ -4,7 +4,7 @@
       <v-avatar size="32" tile class="ma-2">
         <v-img src="/honey-logo.png" />
       </v-avatar>
-      <v-toolbar-title>Honey Finance</v-toolbar-title>
+      <v-toolbar-title><strong>Honey Finance</strong></v-toolbar-title>
       <v-spacer />
       <div v-if="isWeb3Supported">
         <v-chip v-if="connected" outlined color="secondary">
