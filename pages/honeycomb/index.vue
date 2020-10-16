@@ -17,7 +17,7 @@
         sm="6"
         lg="4"
       >
-        <v-card nuxt :to="`/honeycomb/${path}`" disabled>
+        <v-card nuxt :to="`/honeycomb/${path}`">
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
             gradient="to top right, rgba(255, 255, 255, .2), rgba(255, 255, 255, .3)"
@@ -44,14 +44,14 @@
             </v-chip>
             <v-chip color="primary lighten-2">
               APY:&nbsp;
-              <strong>N/A</strong>
+              <strong>{{ honeycomb.apy }}</strong>
             </v-chip>
           </v-card-text>
           <v-divider />
           <v-card-actions>
             <v-spacer />
             <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Coming soon
+              Earn
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -105,7 +105,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Earn
+              Check
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -118,14 +118,11 @@ import HoneycombFactory from '@/lib/honeycomb/HoneycombFactory'
 export default {
   data: () => ({
     honeycombsS1: {},
+    honeycombsS2: {},
   }),
-  computed: {
-    honeycombsS2() {
-      return HoneycombFactory.metadataS2()
-    },
-  },
   created() {
     this.honeycombsS1 = HoneycombFactory.stage1(this.$web3)
+    this.honeycombsS2 = HoneycombFactory.stage2(this.$web3)
   },
   methods: {
     getStage(honeycomb) {
