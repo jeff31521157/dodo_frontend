@@ -74,7 +74,7 @@ export default {
       { name: 'Home', to: '/' },
       { name: 'Twitter', href: 'https://twitter.com/myHoneyFinance' },
       { name: 'Discord', href: 'https://discord.gg/ABSTBw3' },
-      { name: 'Medium', href: 'https://medium.com/@myHoneyFinance' },
+      { name: 'Medium', href: 'https://myhoneyfinance.medium.com' },
       { name: 'News', href: 'https://myhoney.finance/blog/' },
       { name: 'GitHub', href: 'https://github.com/HoneyFinance' },
       {
