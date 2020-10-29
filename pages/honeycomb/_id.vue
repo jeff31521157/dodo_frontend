@@ -265,17 +265,13 @@
           </v-card>
         </v-col>
         <v-col v-if="!honeycomb.userApproved" cols="12">
-          <v-alert icon="mdi-flash" color="secondary lighten-4" class="mt-6">
+          <v-alert icon="mdi-flash" color="secondary lighten-4">
             Please approve the Honeycomb contract to access your
             {{ honeycomb.tokenName }} tokens
           </v-alert>
         </v-col>
-        <v-col v-else cols="12">
-          <v-alert
-            icon="mdi-lightbulb"
-            color="secondary lighten-4"
-            class="mt-6"
-          >
+        <v-col v-else-if="honeycomb.ver < 3" cols="12">
+          <v-alert icon="mdi-lightbulb" color="secondary lighten-4">
             Every time you deposit and withdraw
             {{ honeycomb.tokenName }} tokens, the Honeycomb contract will
             automatically collect HONEY rewards for you!
@@ -577,14 +573,14 @@ export default {
     async collectHoney() {
       await this.honeycomb.withdraw(0)
     },
-    unlockHoney() {
-      console.log('unlock')
+    async unlockHoney() {
+      await this.honeycomb.unlock()
     },
-    instantUnlockHoney() {
-      console.log('instant unlock')
+    async instantUnlockHoney() {
+      await this.honeycomb.instantUnlock()
     },
-    collectHoneyV3() {
-      console.log('collect')
+    async collectHoneyV3() {
+      await this.honeycomb.collect()
     },
     timeDiffToString(diff) {
       const minutes = Math.floor(diff / 60) % 60
