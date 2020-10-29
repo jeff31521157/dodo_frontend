@@ -11,7 +11,7 @@
       <div class="text-center">
         <v-chip outlined class="mx-1" color="primary">
           Stage&nbsp;
-          <strong>{{ honeycomb.ver + 1 }}</strong>
+          <strong>{{ honeycomb.ver + honeycomb.batch }}</strong>
         </v-chip>
         <v-chip
           class="mx-1"
@@ -97,7 +97,88 @@
           </v-alert>
         </v-col>
         <v-col cols="12" sm="6">
-          <v-card>
+          <v-card v-if="honeycomb.ver === 3">
+            <v-toolbar color="secondary" dense flat>
+              <v-avatar size="32" tile class="mr-4">
+                <v-img src="/honey-logo.png" />
+              </v-avatar>
+              <v-toolbar-title class="primary--text">
+                My HONEY Reward
+              </v-toolbar-title>
+            </v-toolbar>
+            <v-card-subtitle class="pb-0">
+              <v-icon color="secondary">mdi-water</v-icon>
+              Mined HONEY
+            </v-card-subtitle>
+            <v-card-title class="text-h3">
+              {{ formattedMinedHoney }}
+            </v-card-title>
+            <v-card-text class="pb-0">
+              <strong>Unlock</strong> needs 72 hours of processing. Requesting
+              <strong>Instant-Unlock</strong> will result in 40% of farmed HONEY
+              being destroyed.
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                text
+                color="primary"
+                large
+                :disabled="!honeycomb.userApproved"
+                @click="unlockHoney"
+              >
+                Unlock
+              </v-btn>
+              <v-btn
+                text
+                color="deep-orange"
+                large
+                :disabled="!honeycomb.userApproved"
+                @click="instantUnlockHoney"
+              >
+                Instant-Unlock (-40%)
+              </v-btn>
+            </v-card-actions>
+            <v-divider />
+
+            <v-card-subtitle class="pb-0">
+              <v-icon color="secondary">mdi-progress-clock</v-icon>
+              HONEY in unlocking process
+            </v-card-subtitle>
+            <v-card-title class="text-h3">
+              {{ formattedUnlockingHoney }}
+            </v-card-title>
+            <v-divider />
+
+            <v-card-subtitle class="pb-0">
+              <v-icon color="secondary">mdi-water-check</v-icon>
+              Unlocked HONEY
+            </v-card-subtitle>
+            <v-card-title class="text-h3 pb-0">
+              {{ formattedUnlockedHoney }}
+            </v-card-title>
+            <v-card-actions>
+              <v-btn
+                text
+                color="primary"
+                large
+                :disabled="!honeycomb.userApproved"
+                @click="collectHoneyV3"
+              >
+                Collect
+              </v-btn>
+            </v-card-actions>
+            <v-divider />
+
+            <v-card-subtitle class="pb-0">
+              <v-icon color="secondary">mdi-water-outline</v-icon>
+              Collected HONEY
+            </v-card-subtitle>
+            <v-card-title class="text-h3">
+              {{ formattedCollectedHoney }}
+            </v-card-title>
+          </v-card>
+
+          <v-card v-else>
             <v-toolbar color="secondary" dense flat>
               <v-avatar size="32" tile class="mr-4">
                 <v-img src="/honey-logo.png" />
@@ -226,6 +307,32 @@
           </v-alert>
         </v-col>
 
+        <v-col
+          v-if="honeycomb.isHToken && honeycomb.honeyJarUrl"
+          cols="12"
+          class="my-0 py-0"
+        >
+          <v-alert color="secondary darken-3" outlined border="left">
+            <v-row align="center">
+              <v-col class="grow py-0">
+                You can get more {{ honeycomb.tokenName }} tokens by depositing
+                in Honey Jar
+              </v-col>
+              <v-col class="shrink py-0">
+                <v-btn
+                  text
+                  color="primary"
+                  nuxt
+                  :to="honeycomb.honeyJarUrl"
+                  target="_blank"
+                >
+                  Go to Honey Jar
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-alert>
+        </v-col>
+
         <v-col cols="12" class="my-0 py-0">
           <v-alert color="primary" outlined border="left">
             You may need to input <strong>HONEY</strong> token contract address
@@ -343,6 +450,26 @@ export default {
   },
   computed: {
     ...mapState('account', { account: (state) => state.address }),
+    formattedMinedHoney() {
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.minedHoney : 0
+      )
+    },
+    formattedUnlockingHoney() {
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.unlockingHoney : 0
+      )
+    },
+    formattedUnlockedHoney() {
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.unlockedHoney : 0
+      )
+    },
+    formattedCollectedHoney() {
+      return AmountFormat.toDisplay(
+        this.honeycomb ? this.honeycomb.collectedHoney : 0
+      )
+    },
     formattedEarnedHoney() {
       return AmountFormat.toDisplay(
         this.honeycomb ? this.honeycomb.earnedHoney : 0
@@ -449,6 +576,15 @@ export default {
     },
     async collectHoney() {
       await this.honeycomb.withdraw(0)
+    },
+    unlockHoney() {
+      console.log('unlock')
+    },
+    instantUnlockHoney() {
+      console.log('instant unlock')
+    },
+    collectHoneyV3() {
+      console.log('collect')
     },
     timeDiffToString(diff) {
       const minutes = Math.floor(diff / 60) % 60
