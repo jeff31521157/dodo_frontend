@@ -261,22 +261,7 @@ import AmountFormat from '@/lib/AmountFormat'
 
 export default {
   data: () => ({
-    jar: {
-      tokenSymbol: 'USDT',
-      tokenName: 'Tether USD',
-      hTokenSymbol: 'hUSDT',
-      icon: 'usdt.png',
-      strategyName: 'DForceUSDT',
-      strategyAPY: 3.33,
-      honeycombAPY: 30.33,
-      userApproved: true,
-      tokenBalance: 14.31,
-      hTokenBalance: 1000,
-      stakedHTokenBalance: 20000,
-      honeycombUri: '/honeycomb/3-hUSDT',
-      hTokenAddress: '0x37C9EB4CeF7571f27136145C82c37a01F2a8Aa16',
-      hTokenRate: 1.0145332,
-    },
+    jar: {},
     dialog: false,
     dialogTitle: null,
     dialogAction: null,
