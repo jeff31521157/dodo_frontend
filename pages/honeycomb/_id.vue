@@ -164,18 +164,18 @@
                 text
                 color="primary"
                 large
-                @click="showDepositDialog"
+                @click="showStakeDialog"
               >
-                Deposit
+                Stake
               </v-btn>
               <v-btn
                 v-if="honeycomb.userApproved"
                 text
                 color="primary"
                 large
-                @click="showWithdrawDialog"
+                @click="showUnstakeDialog"
               >
-                Withdraw
+                Unstake
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -407,9 +407,9 @@ export default {
       await this.honeycomb.getApproval()
       this.waiting = false
     },
-    showDepositDialog() {
-      this.dialogTitle = 'Deposit'
-      this.dialogAction = 'Deposit'
+    showStakeDialog() {
+      this.dialogTitle = 'Stake'
+      this.dialogAction = 'Stake'
       this.dialogMaxValue = this.honeycomb.lpTokenBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
@@ -422,9 +422,9 @@ export default {
       this.setDialogValue(1)
       this.dialog = true
     },
-    showWithdrawDialog() {
-      this.dialogTitle = 'Withdraw'
-      this.dialogAction = 'Withdraw'
+    showUnstakeDialog() {
+      this.dialogTitle = 'Unstake'
+      this.dialogAction = 'Unstake'
       this.dialogMaxValue = this.honeycomb.stakedBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
