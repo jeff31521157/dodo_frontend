@@ -71,36 +71,14 @@
   </v-container>
 </template>
 <script>
+import HoneyJarFactory from '@/lib/honeyjar/HoneyJarFactory'
 export default {
   data: () => ({
-    jars: {
-      USDT: {
-        tokenSymbol: 'USDT',
-        tokenName: 'Tether USD',
-        icon: 'usdt.png',
-        strategyName: 'DForceUSDT',
-        strategyAPY: 3.33,
-        honeycombAPY: 30.33,
-      },
-      USDC: {
-        tokenSymbol: 'USDC',
-        tokenName: 'USD Coin',
-        icon: 'usdc.png',
-        strategyName: 'DForceUSDC',
-        strategyAPY: 2.22,
-        honeycombAPY: 240.15,
-      },
-      DAI: {
-        tokenSymbol: 'DAI',
-        tokenName: 'Dai Stablecoin',
-        icon: 'dai.png',
-        strategyName: 'DAICurve',
-        strategyAPY: 6.83,
-        honeycombAPY: 301.82,
-      },
-    },
+    jars: {},
   }),
-  methods: {},
+  created() {
+    this.jars = HoneyJarFactory.all(this.$web3)
+  },
   head: {
     title: 'Honey Jar',
   },

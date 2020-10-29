@@ -255,6 +255,7 @@
 </template>
 <script>
 import BigNumber from 'bignumber.js'
+import HoneyJarFactory from '@/lib/honeyjar/HoneyJarFactory'
 import { mapState } from 'vuex'
 import AmountFormat from '@/lib/AmountFormat'
 
@@ -287,11 +288,11 @@ export default {
     dialogProcessing: false,
     waiting: false,
   }),
-  // middleware({ route, redirect }) {
-  //   if (!HoneycombFactory.isPathValid(route.params.id)) {
-  //     return redirect('/honeycomb')
-  //   }
-  // },
+  middleware({ route, redirect }) {
+    if (!HoneyJarFactory.isPathValid(route.params.id)) {
+      return redirect('/honeyjar/')
+    }
+  },
   computed: {
     ...mapState('account', { account: (state) => state.address }),
     formattedTokenBalance() {
@@ -328,9 +329,8 @@ export default {
     },
   },
   async created() {
-    // this.honeycomb = HoneycombFactory.create(this.$route.params.id, this.$web3)
-    // await this.honeycomb.syncBatchInfo()
-    // await this.honeycomb.syncAll()
+    this.jar = HoneyJarFactory.create(this.$route.params.id, this.$web3)
+    await this.jar.syncAll()
     // await this.honeycomb.calculateAPY()
   },
   mounted() {
@@ -340,9 +340,9 @@ export default {
     this.$web3.removeBlockProducedListener(this.syncData)
   },
   methods: {
-    syncData() {
+    async syncData() {
       if (this.jar) {
-        // await this.honeycomb.syncAll()
+        await this.jar.syncAll()
       }
     },
     async getApproval() {
@@ -355,10 +355,10 @@ export default {
       this.dialogAction = 'Deposit'
       this.dialogTokenSymbol = this.jar.tokenSymbol
       this.dialogMaxValue = this.jar.tokenBalance
-      this.onDialogAction = () => {
+      this.onDialogAction = async () => {
         this.dialogProcessing = true
         this.waiting = true
-        // await this.honeycomb.deposit(this.dialogValue)
+        await this.jar.deposit(this.dialogValue)
         this.dialogProcessing = false
         this.waiting = false
         this.dialog = false
@@ -372,10 +372,10 @@ export default {
       this.dialogTokenSymbol = this.jar.hTokenSymbol
       this.dialogMaxValue = this.jar.hTokenBalance
       this.dialogHintExtra = `(Est. value: ${this.formattedHTokenBalanceEstValue} ${this.jar.tokenSymbol})`
-      this.onDialogAction = () => {
+      this.onDialogAction = async () => {
         this.dialogProcessing = true
         this.waiting = true
-        // await this.honeycomb.withdraw(this.dialogValue)
+        await this.jar.withdraw(this.dialogValue)
         this.dialogProcessing = false
         this.waiting = false
         this.dialog = false
