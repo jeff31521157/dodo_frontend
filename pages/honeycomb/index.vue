@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <PageHeader title="Honeycomb" subtitle="Liquidity mining" />
+    <PageHeader title="Honeycomb" subtitle="Staking &amp; liquidity mining" />
     <v-row>
       <v-col cols="12">
         <v-banner>
@@ -29,9 +29,11 @@
               </v-avatar>
             </div>
           </v-img>
-          <v-card-title>Honeycomb for {{ honeycomb.tokenName }}</v-card-title>
+          <v-card-title>
+            {{ honeycomb.tokenName }}
+          </v-card-title>
           <v-card-subtitle>
-            Deposit <strong>{{ honeycomb.lpTokenName }}</strong> to earn HONEY
+            Deposit <strong>{{ honeycomb.tokenName }}</strong> to earn HONEY
           </v-card-subtitle>
           <v-card-text>
             <v-chip :color="getStageColor(honeycomb)">
@@ -83,9 +85,11 @@
               </v-avatar>
             </div>
           </v-img>
-          <v-card-title>Honeycomb for {{ honeycomb.tokenName }}</v-card-title>
+          <v-card-title>
+            {{ honeycomb.tokenName }}
+          </v-card-title>
           <v-card-subtitle>
-            Deposit <strong>{{ honeycomb.lpTokenName }}</strong> to earn HONEY
+            Deposit <strong>{{ honeycomb.tokenName }}</strong> to earn HONEY
           </v-card-subtitle>
           <v-card-text>
             <v-chip :color="getStageColor(honeycomb)">
@@ -123,13 +127,13 @@ export default {
   },
   methods: {
     getStage(honeycomb) {
-      return honeycomb.isV1 ? 1 : honeycomb.batch + 2
+      return honeycomb.ver
     },
     getStageColor(honeycomb) {
-      if (honeycomb.isV1) {
+      if (honeycomb.ver === 1) {
         return 'primary lighten-2'
       }
-      if (honeycomb.batch === 0) {
+      if (honeycomb.ver === 2 && honeycomb.batch === 0) {
         return 'secondary darken-2'
       }
       return ''

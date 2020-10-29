@@ -7,11 +7,11 @@
       </v-alert>
     </v-overlay>
     <div v-else-if="honeycomb">
-      <PageHeader title="Honeycomb" :subtitle="honeycomb.lpTokenName" />
+      <PageHeader title="Honeycomb" :subtitle="honeycomb.tokenName" />
       <div class="text-center">
         <v-chip outlined class="mx-1" color="primary">
           Stage&nbsp;
-          <strong>{{ honeycomb.isV1 ? 1 : honeycomb.batch + 2 }}</strong>
+          <strong>{{ honeycomb.ver + 1 }}</strong>
         </v-chip>
         <v-chip
           class="mx-1"
@@ -65,7 +65,7 @@
           >
             <div class="title">Join now</div>
             <div>
-              Stake {{ honeycomb.lpTokenName }} tokens to earn your yummy HONEY!
+              Stake {{ honeycomb.tokenName }} tokens to earn your yummy HONEY!
             </div>
             <v-divider class="my-3 primary" />
             <div>
@@ -90,8 +90,9 @@
             </div>
             <v-divider class="my-3 deep-orange" />
             <div>
-              You can withdraw your staked {{ honeycomb.lpTokenName }} tokens
-              along with your yummy HONEY harvest anytime!
+              You can withdraw your staked
+              {{ honeycomb.tokenName }} tokens along with your yummy HONEY
+              harvest anytime!
             </div>
           </v-alert>
         </v-col>
@@ -101,7 +102,9 @@
               <v-avatar size="32" tile class="mr-4">
                 <v-img src="/honey-logo.png" />
               </v-avatar>
-              <v-toolbar-title class="primary--text">My HONEY</v-toolbar-title>
+              <v-toolbar-title class="primary--text">
+                My HONEY Reward
+              </v-toolbar-title>
             </v-toolbar>
             <v-card-subtitle class="pb-0">Earned HONEY</v-card-subtitle>
             <v-card-title class="text-h3">
@@ -135,7 +138,7 @@
               <v-avatar size="32" class="mr-4">
                 <v-img :src="`/token-icons/${honeycomb.icon}`" />
               </v-avatar>
-              <v-toolbar-title>My {{ honeycomb.lpTokenName }}</v-toolbar-title>
+              <v-toolbar-title>My {{ honeycomb.tokenName }}</v-toolbar-title>
             </v-toolbar>
             <v-card-subtitle class="pb-0">Staked</v-card-subtitle>
             <v-card-title class="text-h3">
@@ -183,7 +186,7 @@
         <v-col v-if="!honeycomb.userApproved" cols="12">
           <v-alert icon="mdi-flash" color="secondary lighten-4" class="mt-6">
             Please approve the Honeycomb contract to access your
-            {{ honeycomb.lpTokenName }} tokens
+            {{ honeycomb.tokenName }} tokens
           </v-alert>
         </v-col>
         <v-col v-else cols="12">
@@ -193,23 +196,27 @@
             class="mt-6"
           >
             Every time you deposit and withdraw
-            {{ honeycomb.lpTokenName }} tokens, the Honeycomb contract will
+            {{ honeycomb.tokenName }} tokens, the Honeycomb contract will
             automatically collect HONEY rewards for you!
           </v-alert>
         </v-col>
 
-        <v-col cols="12" class="my-0 py-0">
+        <v-col
+          v-if="honeycomb.isLPToken && honeycomb.uniswapUrl"
+          cols="12"
+          class="my-0 py-0"
+        >
           <v-alert color="pink" outlined border="left">
             <v-row align="center">
               <v-col class="grow py-0">
-                You can get more {{ honeycomb.lpTokenName }} tokens by providing
+                You can get more {{ honeycomb.tokenName }} tokens by providing
                 liquidity at Uniswap
               </v-col>
               <v-col class="shrink py-0">
                 <v-btn
                   text
                   color="primary"
-                  :href="`https://app.uniswap.org/#/add/ETH/${honeycomb.tokenAddress}`"
+                  :href="honeycomb.uniswapUrl"
                   target="_blank"
                 >
                   Go to Uniswap
@@ -244,7 +251,7 @@
               v-model="dialogValue"
               type="number"
               label="Amount"
-              :suffix="honeycomb.lpTokenName"
+              :suffix="honeycomb.tokenName"
               :hint="`Available: ${formattedDialogMaxValue}`"
               persistent-hint
               required
@@ -353,7 +360,7 @@ export default {
     },
     formattedTokenBalance() {
       return AmountFormat.toDisplay(
-        this.honeycomb ? this.honeycomb.lpTokenBalance : 0
+        this.honeycomb ? this.honeycomb.tokenBalance : 0
       )
     },
     formattedDialogMaxValue() {
@@ -410,7 +417,7 @@ export default {
     showStakeDialog() {
       this.dialogTitle = 'Stake'
       this.dialogAction = 'Stake'
-      this.dialogMaxValue = this.honeycomb.lpTokenBalance
+      this.dialogMaxValue = this.honeycomb.tokenBalance
       this.onDialogAction = async () => {
         this.dialogProcessing = true
         this.waiting = true
@@ -482,7 +489,7 @@ export default {
   },
   head() {
     return {
-      title: `Honeycomb (${this.honeycomb.lpTokenName})`,
+      title: `Honeycomb (${this.honeycomb.tokenName})`,
     }
   },
 }
