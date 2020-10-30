@@ -75,7 +75,7 @@
             </div>
           </v-alert>
         </v-col>
-        <v-col v-if="currentBlock > honeycomb.endBlock" cols="12">
+        <v-col v-if="currentBlock >= honeycomb.endBlock" cols="12">
           <v-alert
             color="deep-orange"
             icon="mdi-timer-outline"
