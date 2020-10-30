@@ -21,6 +21,7 @@
           nuxt
           :to="`/honeycomb/${path}`"
           :elevation="honeycomb.highlight ? 12 : undefined"
+          disabled
         >
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
@@ -48,10 +49,10 @@
               Mining @
               <strong>{{ honeycomb.efficiency }}X</strong>
             </v-chip>
-            <v-chip color="primary lighten-2">
+            <!-- <v-chip color="primary lighten-2">
               APY:&nbsp;
               <strong>{{ honeycomb.apy }}</strong>
-            </v-chip>
+            </v-chip> -->
             <v-chip v-if="honeycomb.isLPToken" color="pink" outlined>
               Uniswap LP
             </v-chip>
@@ -62,9 +63,7 @@
           <v-divider />
           <v-card-actions>
             <v-spacer />
-            <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Earn
-            </v-btn>
+            <v-btn text color="primary" disabled> Coming soon </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
