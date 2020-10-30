@@ -20,9 +20,9 @@
           Strategy APY:&nbsp;
           <strong>{{ jar.strategyAPY.toFixed(2).toLocaleString() }}%</strong>
         </v-chip>
-        <v-chip class="mx-1" color="pink" dark>
+        <v-chip class="mx-1" color="primary" outlined>
           Honeycomb APY:&nbsp;
-          <strong>{{ jar.honeycombAPY.toFixed(2).toLocaleString() }}%</strong>
+          <strong>N/A</strong>
         </v-chip>
       </div>
 
@@ -92,26 +92,27 @@
               {{ formattedHTokenBalance }}
             </v-card-title>
             <v-card-subtitle>
-              Est. value: {{ formattedHTokenBalanceEstValue }} USDT
+              Est. value: {{ formattedHTokenBalanceEstValue }}
+              {{ jar.tokenSymbol }}
             </v-card-subtitle>
             <v-divider />
             <v-card-title>
-              Staked {{ jar.hTokenSymbol }} in Honeycomb
+              Stake {{ jar.hTokenSymbol }} in Honeycomb
             </v-card-title>
             <v-card-subtitle>
               Stake {{ jar.hTokenSymbol }} to farm HONEY in Honeycomb. You may
               unstake and withdraw at any time.
             </v-card-subtitle>
-            <v-card-title class="text-h3 pt-0">
+            <!-- <v-card-title class="text-h3 pt-0">
               {{ formattedStakedHTokenBalance }}
             </v-card-title>
             <v-card-subtitle>
               Est. value: {{ formattedStakedHTokenBalanceEstValue }} USDT
             </v-card-subtitle>
-            <v-divider />
+            <v-divider /> -->
             <v-card-actions>
               <v-spacer />
-              <v-btn
+              <!-- <v-btn
                 v-if="!jar.userApproved"
                 text
                 color="primary"
@@ -127,15 +128,8 @@
                 @click="showStakeDialog"
               >
                 Stake
-              </v-btn>
-              <v-btn
-                v-if="jar.userApproved"
-                text
-                color="primary"
-                large
-                nuxt
-                :to="jar.honeycombUri"
-              >
+              </v-btn> -->
+              <v-btn text color="primary" large nuxt :to="jar.honeycombUrl">
                 Go to Honeycomb
               </v-btn>
             </v-card-actions>
@@ -308,15 +302,14 @@ export default {
   },
   watch: {
     async account(newVal) {
-      if (this.honeycomb) {
-        await this.honeycomb.syncAll()
+      if (this.jar) {
+        await this.jar.syncAll()
       }
     },
   },
   async created() {
     this.jar = HoneyJarFactory.create(this.$route.params.id, this.$web3)
     await this.jar.syncAll()
-    // await this.honeycomb.calculateAPY()
   },
   mounted() {
     this.$web3.addBlockProducedListener(this.syncData)
@@ -387,9 +380,6 @@ export default {
     },
     setDialogValue(multiplier) {
       this.dialogValue = new BigNumber(multiplier).times(this.dialogMaxValue)
-    },
-    async collectHoney() {
-      // await this.honeycomb.withdraw(0)
     },
   },
   head() {
