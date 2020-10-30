@@ -21,7 +21,6 @@
           nuxt
           :to="`/honeycomb/${path}`"
           :elevation="honeycomb.highlight ? 12 : undefined"
-          disabled
         >
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
@@ -63,7 +62,9 @@
           <v-divider />
           <v-card-actions>
             <v-spacer />
-            <v-btn text color="primary" disabled> Coming soon </v-btn>
+            <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
+              Earn
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
