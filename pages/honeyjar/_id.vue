@@ -20,10 +20,10 @@
           Strategy APY:&nbsp;
           <strong>{{ jar.strategyAPY.toFixed(2).toLocaleString() }}%</strong>
         </v-chip>
-        <v-chip class="mx-1" color="primary" outlined>
+        <!-- <v-chip class="mx-1" color="primary" outlined>
           Honeycomb APY:&nbsp;
           <strong>N/A</strong>
-        </v-chip>
+        </v-chip> -->
       </div>
 
       <v-row class="mt-6">
@@ -129,9 +129,7 @@
               >
                 Stake
               </v-btn> -->
-              <v-btn text color="primary" large nuxt :to="jar.honeycombUrl">
-                Go to Honeycomb
-              </v-btn>
+              <v-btn text color="primary" large disabled> Coming soon </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
