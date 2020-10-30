@@ -20,10 +20,10 @@
           Strategy APY:&nbsp;
           <strong>{{ jar.strategyAPY.toFixed(2).toLocaleString() }}%</strong>
         </v-chip>
-        <!-- <v-chip class="mx-1" color="primary" outlined>
+        <v-chip class="mx-1" color="pink" dark>
           Honeycomb APY:&nbsp;
-          <strong>N/A</strong>
-        </v-chip> -->
+          <strong>{{ jar.honeycombAPY.toFixed(2).toLocaleString() }}%</strong>
+        </v-chip>
       </div>
 
       <v-row class="mt-6">
@@ -97,38 +97,21 @@
             </v-card-subtitle>
             <v-divider />
             <v-card-title>
-              Stake {{ jar.hTokenSymbol }} in Honeycomb
+              Staked {{ jar.hTokenSymbol }} in Honeycomb
             </v-card-title>
             <v-card-subtitle>
               Stake {{ jar.hTokenSymbol }} to farm HONEY in Honeycomb. You may
               unstake and withdraw at any time.
             </v-card-subtitle>
-            <!-- <v-card-title class="text-h3 pt-0">
+            <v-card-title class="text-h3 pt-0">
               {{ formattedStakedHTokenBalance }}
             </v-card-title>
             <v-card-subtitle>
               Est. value: {{ formattedStakedHTokenBalanceEstValue }} USDT
             </v-card-subtitle>
-            <v-divider /> -->
+            <v-divider />
             <v-card-actions>
               <v-spacer />
-              <!-- <v-btn
-                v-if="!jar.userApproved"
-                text
-                color="primary"
-                large
-                @click="getApproval"
-              >
-                Approve
-              </v-btn>
-              <v-btn
-                v-if="jar.userApproved"
-                color="primary"
-                large
-                @click="showStakeDialog"
-              >
-                Stake
-              </v-btn> -->
               <v-btn text color="primary" large nuxt :to="jar.honeycombUrl">
                 Go to Honeycomb
               </v-btn>
@@ -310,6 +293,7 @@ export default {
   async created() {
     this.jar = HoneyJarFactory.create(this.$route.params.id, this.$web3)
     await this.jar.syncAll()
+    await this.jar.calculateAPY()
   },
   mounted() {
     this.$web3.addBlockProducedListener(this.syncData)
