@@ -129,7 +129,9 @@
               >
                 Stake
               </v-btn> -->
-              <v-btn text color="primary" large disabled> Coming soon </v-btn>
+              <v-btn text color="primary" large nuxt :to="jar.honeycombUrl">
+                Go to Honeycomb
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
