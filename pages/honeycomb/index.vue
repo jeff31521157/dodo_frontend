@@ -48,10 +48,10 @@
               Mining @
               <strong>{{ honeycomb.efficiency }}X</strong>
             </v-chip>
-            <!-- <v-chip color="primary lighten-2">
+            <v-chip color="primary lighten-2">
               APY:&nbsp;
               <strong>{{ honeycomb.apy }}</strong>
-            </v-chip> -->
+            </v-chip>
             <v-chip v-if="honeycomb.isLPToken" color="pink" outlined>
               Uniswap LP
             </v-chip>
