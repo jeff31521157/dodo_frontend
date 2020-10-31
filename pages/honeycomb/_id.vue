@@ -571,16 +571,24 @@ export default {
       this.dialogValue = new BigNumber(multiplier).times(this.dialogMaxValue)
     },
     async collectHoney() {
+      this.waiting = true
       await this.honeycomb.withdraw(0)
+      this.waiting = false
     },
     async unlockHoney() {
+      this.waiting = true
       await this.honeycomb.unlock()
+      this.waiting = false
     },
     async instantUnlockHoney() {
+      this.waiting = true
       await this.honeycomb.instantUnlock()
+      this.waiting = false
     },
     async collectHoneyV3() {
+      this.waiting = true
       await this.honeycomb.collect()
+      this.waiting = false
     },
     timeDiffToString(diff) {
       const minutes = Math.floor(diff / 60) % 60
