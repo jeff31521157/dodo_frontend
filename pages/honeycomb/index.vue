@@ -110,10 +110,6 @@
               Mining @
               <strong>{{ honeycomb.efficiency }}X</strong>
             </v-chip>
-            <v-chip color="primary lighten-2">
-              APY:&nbsp;
-              <strong>{{ honeycomb.apy }}</strong>
-            </v-chip>
             <v-chip v-if="honeycomb.isLPToken" color="pink" outlined>
               Uniswap LP
             </v-chip>
@@ -164,15 +160,9 @@
             Stake <strong>{{ honeycomb.tokenName }}</strong> to earn HONEY
           </v-card-subtitle>
           <v-card-text>
-            <v-chip
-              v-if="honeycomb.efficiency > 1"
-              :color="getEfficiencyColor(honeycomb)"
-              dark
-            >
-              Mining @
-              <strong>{{ honeycomb.efficiency }}X</strong>
+            <v-chip v-if="honeycomb.isLPToken" color="pink" outlined>
+              Uniswap LP
             </v-chip>
-            <v-chip color="primary lighten-2">APY: N/A</v-chip>
           </v-card-text>
           <v-divider />
           <v-card-actions>

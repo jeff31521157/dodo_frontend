@@ -22,7 +22,12 @@
         >
           Mining @<strong>{{ honeycomb.efficiency }}X</strong>
         </v-chip>
-        <v-chip outlined class="mx-1" color="primary">
+        <v-chip
+          v-if="currentBlock < honeycomb.endBlock + 6400"
+          outlined
+          class="mx-1"
+          color="primary"
+        >
           APY:&nbsp;
           <strong>{{ honeycomb.apy }}</strong>
         </v-chip>
