@@ -14,7 +14,7 @@
       <div class="text-center">
         <v-chip outlined class="mx-1" color="primary">
           Strategy:&nbsp;
-          <strong>DForceUSDT</strong>
+          <strong>{{ jar.strategyName }}</strong>
         </v-chip>
         <v-chip outlined class="mx-1" color="primary">
           Strategy APY:&nbsp;
@@ -107,7 +107,8 @@
               {{ formattedStakedHTokenBalance }}
             </v-card-title>
             <v-card-subtitle>
-              Est. value: {{ formattedStakedHTokenBalanceEstValue }} USDT
+              Est. value: {{ formattedStakedHTokenBalanceEstValue }}
+              {{ jar.tokenSymbol }}
             </v-card-subtitle>
             <v-divider />
             <v-card-actions>
