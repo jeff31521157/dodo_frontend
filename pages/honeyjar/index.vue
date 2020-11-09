@@ -77,7 +77,7 @@ export default {
     jars: {},
   }),
   created() {
-    this.jars = HoneyJarFactory.all(this.$web3)
+    this.jars = HoneyJarFactory.all(this.$web3, this.$axios)
   },
   head: {
     title: 'Honey Jar',

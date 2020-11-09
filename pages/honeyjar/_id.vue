@@ -292,7 +292,11 @@ export default {
     },
   },
   async created() {
-    this.jar = HoneyJarFactory.create(this.$route.params.id, this.$web3)
+    this.jar = HoneyJarFactory.create(
+      this.$route.params.id,
+      this.$web3,
+      this.$axios
+    )
     await this.jar.syncAll()
     await this.jar.calculateAPY()
   },
