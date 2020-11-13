@@ -88,7 +88,7 @@ export default {
     this.stages.push({
       stage: 4,
       showAPY: false,
-      comingSoon: false,
+      comingSoon: true,
       ended: false,
       data: HoneycombFactory.stage4(this.$web3),
     })
