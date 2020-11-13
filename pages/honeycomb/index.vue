@@ -8,7 +8,10 @@
             mdi-trending-up
           </v-icon>
           <v-icon v-else slot="icon" color="grey" size="24">mdi-check</v-icon>
-          <h3 class="text-h6 text--secondary">Stage {{ stage.stage }}</h3>
+          <h3 class="text-h6 text--secondary">
+            Stage {{ stage.stage }}
+            <small>({{ stage.reward.toLocaleString() }} HONEY)</small>
+          </h3>
         </v-banner>
       </v-col>
       <v-col
@@ -91,6 +94,7 @@ export default {
       comingSoon: true,
       ended: false,
       data: HoneycombFactory.stage4(this.$web3),
+      reward: 3600,
     })
     this.stages.push({
       stage: 3,
@@ -98,6 +102,7 @@ export default {
       comingSoon: false,
       ended: false,
       data: HoneycombFactory.stage3(this.$web3),
+      reward: 3400,
     })
     this.stages.push({
       stage: 2,
@@ -105,6 +110,7 @@ export default {
       comingSoon: false,
       ended: true,
       data: HoneycombFactory.stage2(this.$web3),
+      reward: 600,
     })
     this.stages.push({
       stage: 1,
@@ -112,6 +118,7 @@ export default {
       comingSoon: false,
       ended: true,
       data: HoneycombFactory.stage1(this.$web3),
+      reward: 1000,
     })
   },
   methods: {
