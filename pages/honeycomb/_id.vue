@@ -532,7 +532,12 @@ export default {
     this.honeycomb = HoneycombFactory.create(this.$route.params.id, this.$web3)
     await this.honeycomb.syncBatchInfo()
     await this.honeycomb.syncAll()
-    await this.honeycomb.calculateAPY()
+    if (
+      this.honeycomb.ver >= 3 &&
+      this.currentBlock < this.honeycomb.endBlock + 6400
+    ) {
+      await this.honeycomb.calculateAPY()
+    }
   },
   mounted() {
     this.$web3.addBlockProducedListener(this.syncData)
