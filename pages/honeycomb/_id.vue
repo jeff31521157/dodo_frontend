@@ -220,9 +220,18 @@
         </v-col>
         <v-col cols="12" sm="6">
           <v-card>
-            <v-toolbar :color="honeycomb.themeColor" dense flat dark>
-              <v-avatar size="32" class="mr-4">
+            <v-toolbar
+              :color="honeycomb.themeColor"
+              dense
+              flat
+              dark
+              style="position: relative"
+            >
+              <v-avatar size="32" class="mr-4" color="white">
                 <v-img :src="`/token-icons/${honeycomb.icon}`" />
+              </v-avatar>
+              <v-avatar v-if="honeycomb.subicon" size="14" class="sub-icon">
+                <v-img :src="`/token-icons/${honeycomb.subicon}`" />
               </v-avatar>
               <v-toolbar-title>My {{ honeycomb.tokenName }}</v-toolbar-title>
             </v-toolbar>
@@ -639,3 +648,10 @@ export default {
   },
 }
 </script>
+<style scoped>
+.sub-icon {
+  position: absolute;
+  left: 36px;
+  bottom: 6px;
+}
+</style>

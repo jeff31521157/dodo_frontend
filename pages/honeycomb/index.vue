@@ -1,17 +1,18 @@
 <template>
   <v-container fluid>
     <PageHeader title="Honeycomb" subtitle="Staking &amp; liquidity mining" />
-    <v-row>
+    <v-row v-for="stage in stages" :key="stage.stage">
       <v-col cols="12">
         <v-banner>
-          <v-icon slot="icon" color="secondary" size="24">
+          <v-icon v-if="!stage.ended" slot="icon" color="secondary" size="24">
             mdi-trending-up
           </v-icon>
-          <h3 class="text-h6 text--secondary">Stage 3</h3>
+          <v-icon v-else slot="icon" color="grey" size="24">mdi-check</v-icon>
+          <h3 class="text-h6 text--secondary">Stage {{ stage.stage }}</h3>
         </v-banner>
       </v-col>
       <v-col
-        v-for="(honeycomb, path) in honeycombsS3"
+        v-for="(honeycomb, path) in stage.data"
         :key="path"
         cols="12"
         sm="6"
@@ -21,6 +22,7 @@
           nuxt
           :to="`/honeycomb/${path}`"
           :elevation="honeycomb.highlight ? 12 : undefined"
+          :disabled="stage.comingSoon"
         >
           <v-img
             :src="require('@/assets/images/honeycomb.jpg')"
@@ -28,9 +30,14 @@
             height="96px"
           >
             <div class="text-center">
-              <v-avatar size="72" class="ma-3 elevation-8">
-                <v-img :src="`/token-icons/${honeycomb.icon}`" />
-              </v-avatar>
+              <div class="ma-3 icon-container">
+                <v-avatar size="72" class="elevation-8" color="white">
+                  <v-img :src="`/token-icons/${honeycomb.icon}`" />
+                </v-avatar>
+                <v-avatar v-if="honeycomb.subicon" size="28" class="sub-icon">
+                  <v-img :src="`/token-icons/${honeycomb.subicon}`" />
+                </v-avatar>
+              </div>
             </div>
           </v-img>
           <v-card-title>
@@ -48,7 +55,7 @@
               Mining @
               <strong>{{ honeycomb.efficiency }}X</strong>
             </v-chip>
-            <v-chip color="primary lighten-2">
+            <v-chip v-if="stage.showAPY" color="primary lighten-2">
               APY:&nbsp;
               <strong>{{ honeycomb.apy }}</strong>
             </v-chip>
@@ -63,112 +70,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Earn
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12">
-        <v-banner>
-          <v-icon slot="icon" color="secondary" size="24">
-            mdi-trending-up
-          </v-icon>
-          <h3 class="text-h6 text--secondary">Stage 2</h3>
-        </v-banner>
-      </v-col>
-      <v-col
-        v-for="(honeycomb, path) in honeycombsS2"
-        :key="path"
-        cols="12"
-        sm="6"
-        lg="4"
-      >
-        <v-card nuxt :to="`/honeycomb/${path}`">
-          <v-img
-            :src="require('@/assets/images/honeycomb.jpg')"
-            gradient="to top right, rgba(255, 255, 255, .2), rgba(255, 255, 255, .3)"
-            height="96px"
-          >
-            <div class="text-center">
-              <v-avatar size="72" class="ma-3 elevation-8">
-                <v-img :src="`/token-icons/${honeycomb.icon}`" />
-              </v-avatar>
-            </div>
-          </v-img>
-          <v-card-title>
-            {{ honeycomb.tokenName }}
-          </v-card-title>
-          <v-card-subtitle>
-            Stake <strong>{{ honeycomb.tokenName }}</strong> to earn HONEY
-          </v-card-subtitle>
-          <v-card-text>
-            <v-chip
-              v-if="honeycomb.efficiency > 1"
-              :color="getEfficiencyColor(honeycomb)"
-              dark
-            >
-              Mining @
-              <strong>{{ honeycomb.efficiency }}X</strong>
-            </v-chip>
-            <v-chip v-if="honeycomb.isLPToken" color="pink" outlined>
-              Uniswap LP
-            </v-chip>
-            <v-chip v-if="honeycomb.isHToken" color="orange" outlined>
-              Honey Jar
-            </v-chip>
-          </v-card-text>
-          <v-divider />
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Earn
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-      <v-col cols="12">
-        <v-banner>
-          <v-icon slot="icon" color="secondary" size="24">
-            mdi-trending-up
-          </v-icon>
-          <h3 class="text-h6 text--secondary">Stage 1</h3>
-        </v-banner>
-      </v-col>
-      <v-col
-        v-for="(honeycomb, path) in honeycombsS1"
-        :key="path"
-        cols="12"
-        sm="6"
-        lg="4"
-      >
-        <v-card nuxt :to="`/honeycomb/${path}`">
-          <v-img
-            :src="require('@/assets/images/honeycomb.jpg')"
-            gradient="to top right, rgba(255, 255, 255, .2), rgba(255, 255, 255, .3)"
-            height="96px"
-          >
-            <div class="text-center">
-              <v-avatar size="72" class="ma-3 elevation-8">
-                <v-img :src="`/token-icons/${honeycomb.icon}`" />
-              </v-avatar>
-            </div>
-          </v-img>
-          <v-card-title>
-            {{ honeycomb.tokenName }}
-          </v-card-title>
-          <v-card-subtitle>
-            Stake <strong>{{ honeycomb.tokenName }}</strong> to earn HONEY
-          </v-card-subtitle>
-          <v-card-text>
-            <v-chip v-if="honeycomb.isLPToken" color="pink" outlined>
-              Uniswap LP
-            </v-chip>
-          </v-card-text>
-          <v-divider />
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text color="primary" nuxt :to="`/honeycomb/${path}`">
-              Check
+              {{ getButtonText(stage) }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -180,18 +82,47 @@
 import HoneycombFactory from '@/lib/honeycomb/HoneycombFactory'
 export default {
   data: () => ({
-    honeycombsS1: {},
-    honeycombsS2: {},
-    honeycombsS3: {},
+    stages: [],
   }),
   created() {
-    this.honeycombsS1 = HoneycombFactory.stage1(this.$web3)
-    this.honeycombsS2 = HoneycombFactory.stage2(this.$web3)
-    this.honeycombsS3 = HoneycombFactory.stage3(this.$web3)
+    this.stages.push({
+      stage: 4,
+      showAPY: false,
+      comingSoon: false,
+      ended: false,
+      data: HoneycombFactory.stage4(this.$web3),
+    })
+    this.stages.push({
+      stage: 3,
+      showAPY: true,
+      comingSoon: false,
+      ended: false,
+      data: HoneycombFactory.stage3(this.$web3),
+    })
+    this.stages.push({
+      stage: 2,
+      showAPY: false,
+      comingSoon: false,
+      ended: true,
+      data: HoneycombFactory.stage2(this.$web3),
+    })
+    this.stages.push({
+      stage: 1,
+      showAPY: false,
+      comingSoon: false,
+      ended: true,
+      data: HoneycombFactory.stage1(this.$web3),
+    })
   },
   methods: {
-    getStage(honeycomb) {
-      return honeycomb.ver
+    getButtonText(stage) {
+      if (stage.comingSoon) {
+        return 'Coming soon'
+      } else if (stage.ended) {
+        return 'Check'
+      } else {
+        return 'Earn'
+      }
     },
     getEfficiencyColor(honeycomb) {
       switch (honeycomb.efficiency) {
@@ -199,6 +130,7 @@ export default {
           return 'lime darken-2'
         case 3:
           return 'orange'
+        case 4:
         case 5:
           return 'pink'
       }
@@ -210,3 +142,13 @@ export default {
   },
 }
 </script>
+<style scoped>
+.icon-container {
+  position: relative;
+}
+.sub-icon {
+  position: absolute;
+  left: 52%;
+  bottom: 0;
+}
+</style>
