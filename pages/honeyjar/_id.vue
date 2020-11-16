@@ -22,7 +22,11 @@
         </v-chip>
         <v-chip class="mx-1" color="pink" dark>
           Honeycomb APY:&nbsp;
-          <strong>{{ jar.honeycombAPY.toFixed(2).toLocaleString() }}%</strong>
+          <strong>{{
+            jar.honeycombAPY > 10000
+              ? '10000%+'
+              : jar.honeycombAPY.toFixed(2).toLocaleString()
+          }}</strong>
         </v-chip>
       </div>
 
@@ -98,6 +102,9 @@
             <v-divider />
             <v-card-title>
               Staked {{ jar.hTokenSymbol }} in Honeycomb
+              <small class="text--secondary">
+                (Stage {{ jar.latestHoneycombStage }})
+              </small>
             </v-card-title>
             <v-card-subtitle>
               Stake {{ jar.hTokenSymbol }} to farm HONEY in Honeycomb. You may
@@ -113,7 +120,13 @@
             <v-divider />
             <v-card-actions>
               <v-spacer />
-              <v-btn text color="primary" large nuxt :to="jar.honeycombUrl">
+              <v-btn
+                text
+                color="primary"
+                large
+                nuxt
+                :to="`/honeycomb/${jar.latestHoneycombStage}-${jar.hTokenSymbol}`"
+              >
                 Go to Honeycomb
               </v-btn>
             </v-card-actions>
@@ -152,6 +165,24 @@
               </a>
             </strong>
             to reveal the asset in your wallet
+          </v-alert>
+        </v-col>
+
+        <v-col cols="12">
+          <v-alert color="pink" outlined border="left" prominent>
+            <div class="title">Honeycomb for {{ jar.hTokenSymbol }}</div>
+            <div>
+              <v-btn
+                v-for="i in jar.honeycombStages"
+                :key="i"
+                text
+                color="primary"
+                nuxt
+                :to="`/honeycomb/${i}-${jar.hTokenSymbol}`"
+              >
+                Stage {{ i }}
+              </v-btn>
+            </div>
           </v-alert>
         </v-col>
       </v-row>

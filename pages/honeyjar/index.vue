@@ -32,10 +32,12 @@
               <v-list-item-subtitle>Yearly growth</v-list-item-subtitle>
               <v-list-item-title>
                 {{
-                  (jar.strategyAPY + jar.honeycombAPY)
-                    .toFixed(2)
-                    .toLocaleString()
-                }}%
+                  jar.strategyAPY + jar.honeycombAPY > 10000
+                    ? '10000%+'
+                    : (jar.strategyAPY + jar.honeycombAPY)
+                        .toFixed(2)
+                        .toLocaleString() + '%'
+                }}
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon
@@ -52,7 +54,11 @@
                     Strategy APY:
                     {{ jar.strategyAPY.toFixed(2).toLocaleString() }}% +
                     Honeycomb APY:
-                    {{ jar.honeycombAPY.toFixed(2).toLocaleString() }}%
+                    {{
+                      jar.honeycombAPY > 10000
+                        ? '10000%+'
+                        : jar.honeycombAPY.toFixed(2).toLocaleString() + '%'
+                    }}
                   </span>
                 </v-tooltip>
               </v-list-item-title>
