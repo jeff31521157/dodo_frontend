@@ -529,7 +529,11 @@ export default {
     },
   },
   async created() {
-    this.honeycomb = HoneycombFactory.create(this.$route.params.id, this.$web3)
+    this.honeycomb = HoneycombFactory.create(
+      this.$route.params.id,
+      this.$web3,
+      this.$gtag
+    )
     await this.honeycomb.syncBatchInfo()
     await this.honeycomb.syncAll()
     if (
