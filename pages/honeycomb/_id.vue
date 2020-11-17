@@ -365,6 +365,52 @@
             to reveal the asset in your wallet
           </v-alert>
         </v-col>
+
+        <v-col cols="12" class="my-0 py-0">
+          <v-alert
+            v-if="honeycomb.ver === 1"
+            color="primary"
+            outlined
+            border="left"
+          >
+            Honeycomb contract is available at
+            <strong>
+              <a
+                href="https://etherscan.io/address/0xd4FA82d2Bd97D954e7c748Dbf533B71A1991E66F#code"
+                target="_blank"
+              >
+                0xd4FA82d2Bd97D954e7c748Dbf533B71A1991E66F
+              </a>
+            </strong>
+          </v-alert>
+          <v-alert
+            v-else-if="honeycomb.ver === 2"
+            color="primary"
+            outlined
+            border="left"
+          >
+            HoneycombV2 contract is available at
+            <strong>
+              <a
+                href="https://etherscan.io/address/0xa0d395721F34C4F9EDFd0c192C6b676C1E4B8154#code"
+                target="_blank"
+              >
+                0xa0d395721F34C4F9EDFd0c192C6b676C1E4B8154
+              </a>
+            </strong>
+          </v-alert>
+          <v-alert v-else color="primary" outlined border="left">
+            HoneycombV3 contract is available at
+            <strong>
+              <a
+                href="https://etherscan.io/address/0xc959b17cb940d739e641e78f0f9a961550cc6ed0#code"
+                target="_blank"
+              >
+                0xc959b17cb940d739e641e78f0f9a961550cc6ed0
+              </a>
+            </strong>
+          </v-alert>
+        </v-col>
       </v-row>
       <v-dialog v-model="dialog" persistent max-width="480px">
         <v-card>
