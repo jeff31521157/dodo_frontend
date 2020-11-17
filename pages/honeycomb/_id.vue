@@ -152,6 +152,14 @@
             <v-card-title class="text-h3">
               {{ formattedUnlockingHoney }}
             </v-card-title>
+            <v-card-text v-if="honeycomb.nearestCollectableTime > 0">
+              Unlocking at
+              {{
+                new Date(
+                  honeycomb.nearestCollectableTime * 1000
+                ).toLocaleString()
+              }}
+            </v-card-text>
             <v-divider />
 
             <v-card-subtitle class="pb-0">
