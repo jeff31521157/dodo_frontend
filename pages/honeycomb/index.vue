@@ -1,7 +1,25 @@
 <template>
   <v-container fluid>
     <PageHeader title="Honeycomb" subtitle="Staking &amp; liquidity mining" />
-    <v-row v-for="stage in stages" :key="stage.stage">
+    <div class="text-center">
+      <v-btn
+        v-for="stage in stages"
+        :key="stage.stage"
+        color="secondary"
+        rounded
+        text
+        outlined
+        class="my-2 mx-1"
+        @click="$vuetify.goTo(`#stage${stage.stage}`)"
+      >
+        Stage {{ stage.stage }}
+      </v-btn>
+    </div>
+    <v-row
+      v-for="stage in stages"
+      :id="`stage${stage.stage}`"
+      :key="stage.stage"
+    >
       <v-col cols="12">
         <v-banner>
           <v-icon v-if="!stage.ended" slot="icon" color="secondary" size="24">
