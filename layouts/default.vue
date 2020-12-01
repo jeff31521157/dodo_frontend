@@ -121,6 +121,7 @@ export default {
       }
 
       this.$store.commit('account/set', account)
+      this.$gtag('set', { account })
     },
   },
 }
