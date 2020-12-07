@@ -5,7 +5,7 @@
       <v-btn
         v-for="stage in stages"
         :key="stage.stage"
-        color="secondary"
+        :color="!stage.ended ? 'secondary' : 'grey'"
         rounded
         text
         outlined
@@ -42,10 +42,12 @@
         <v-card
           nuxt
           :to="`/honeycomb/${path}`"
-          :elevation="honeycomb.highlight ? 12 : undefined"
+          :elevation="!stage.ended && honeycomb.highlight ? 12 : undefined"
           :disabled="stage.comingSoon"
         >
+          <v-sheet v-if="stage.ended" height="4" color="grey" />
           <v-img
+            v-if="!stage.ended"
             :src="require('@/assets/images/honeycomb.jpg')"
             gradient="to top right, rgba(255, 255, 255, .2), rgba(255, 255, 255, .3)"
             height="96px"
