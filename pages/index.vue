@@ -31,7 +31,6 @@
 
       <v-col cols="12" sm="6" md="4">
         <v-card nuxt to="/honeyjar/">
-          <v-sheet height="4" color="secondary" />
           <v-card-title class="text-h4">Honey Jar</v-card-title>
           <v-card-subtitle class="text-h6">
             Vault - Yield farming
@@ -55,14 +54,14 @@
       </v-col>
 
       <v-col cols="12" sm="6" md="4">
-        <v-card disabled>
+        <v-card href="https://forum.myhoney.finance" target="_blank">
+          <v-sheet height="4" color="secondary" />
           <v-card-title class="text-h4">Honey Congress</v-card-title>
           <v-card-subtitle class="text-h6">
             Decentralized governance
           </v-card-subtitle>
           <v-img
             :src="require('@/assets/images/honey-bees.jpg')"
-            gradient="to top right, rgba(255, 255, 255, .66), rgba(255, 255, 255, 1)"
             height="200px"
           />
           <v-card-text>
@@ -73,7 +72,14 @@
           <v-divider />
           <v-card-actions>
             <v-spacer />
-            <v-btn text color="primary" disabled>Coming soon</v-btn>
+            <v-btn
+              text
+              color="primary"
+              href="https://forum.myhoney.finance"
+              target="_blank"
+            >
+              Participate
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
