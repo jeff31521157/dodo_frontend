@@ -110,8 +110,8 @@ export default {
   created() {
     this.stages.push({
       stage: 9,
-      showAPY: false,
-      comingSoon: true,
+      showAPY: true,
+      comingSoon: false,
       ended: false,
       data: HoneycombFactory.stage9(this.$web3),
       reward: 7200,
